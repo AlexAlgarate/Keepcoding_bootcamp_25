@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class AgeCategory:
     name: str
     min_age: int | None
@@ -38,14 +38,18 @@ def get_visitor_age() -> int | None:
     return age
 
 
-def calculate_total_price(counter: dict, categories: list[AgeCategory]) -> int:
+def calculate_total_price(
+    counter: dict[str, int], categories: list[AgeCategory]
+) -> int:
     total = 0
     for category in categories:
         total += counter[category.name] * category.price
     return total
 
 
-def print_detailed_price(counter: dict, categories: list[AgeCategory]) -> None:
+def print_detailed_price(
+    counter: dict[str, int], categories: list[AgeCategory]
+) -> None:
     print("\n- Detalle por edades:")
     for category in categories:
         quantity = counter[category.name]
@@ -54,7 +58,7 @@ def print_detailed_price(counter: dict, categories: list[AgeCategory]) -> None:
             print(f"\t {category.label}: {quantity} x {category.price} = {subtotal} €")
 
 
-def main():
+def main() -> None:
     CATEGORIES = [
         AgeCategory(
             name="BABIES",
