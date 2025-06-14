@@ -10,14 +10,17 @@ class AgeCategory:
     label: str
 
 
-def categorize_age(age: int, categories: list[AgeCategory]) -> AgeCategory | None:
-    for category in categories:
-        if (category.min_age is None or age >= category.min_age) and (
-            category.max_age is None or age <= category.max_age
-        ):
-            return category
+def contains_age(age: int, category: AgeCategory) -> bool:
+    min_age_valid = category.min_age is None or age >= category.min_age
+    max_age_valid = category.max_age is None or age <= category.max_age
 
-    return None
+    return min_age_valid and max_age_valid
+
+
+def categorize_age(age: int, categories: list[AgeCategory]) -> AgeCategory | None:
+    return next(
+        (category for category in categories if contains_age(age, category)), None
+    )
 
 
 def get_visitor_age() -> int | None:
@@ -41,10 +44,7 @@ def get_visitor_age() -> int | None:
 def calculate_total_price(
     counter: dict[str, int], categories: list[AgeCategory]
 ) -> int:
-    total = 0
-    for category in categories:
-        total += counter[category.name] * category.price
-    return total
+    return sum([counter[category.name] * category.price for category in categories])
 
 
 def print_detailed_price(
