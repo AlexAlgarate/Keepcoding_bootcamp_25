@@ -1,5 +1,5 @@
 def main():
-    print("Hello from keepcoding-bootcamp-25!")
+    print("Hello from python-course!")
 
 
 if __name__ == "__main__":
