@@ -11,10 +11,9 @@ class AgeCategory:
 
 
 def contains_age(age: int, category: AgeCategory) -> bool:
-    min_age_valid = category.min_age is None or age >= category.min_age
-    max_age_valid = category.max_age is None or age <= category.max_age
-
-    return min_age_valid and max_age_valid
+    return (category.min_age is None or age >= category.min_age) and (
+        category.max_age is None or age <= category.max_age
+    )
 
 
 def categorize_age(age: int, categories: list[AgeCategory]) -> AgeCategory | None:
@@ -26,7 +25,7 @@ def categorize_age(age: int, categories: list[AgeCategory]) -> AgeCategory | Non
 def get_visitor_age() -> int | None:
     ticket = input("Edad del visitante: ").strip()
 
-    if ticket == "":
+    if not ticket:
         return None
 
     if not ticket.isdigit():
@@ -44,7 +43,7 @@ def get_visitor_age() -> int | None:
 def calculate_total_price(
     counter: dict[str, int], categories: list[AgeCategory]
 ) -> int:
-    return sum([counter[category.name] * category.price for category in categories])
+    return sum(counter[category.name] * category.price for category in categories)
 
 
 def print_detailed_price(
@@ -60,35 +59,12 @@ def print_detailed_price(
 
 def main() -> None:
     CATEGORIES = [
-        AgeCategory(
-            name="BABIES",
-            min_age=None,
-            max_age=2,
-            price=0,
-            label="Bebés (0-2 años)",
-        ),
-        AgeCategory(
-            name="KIDS",
-            min_age=3,
-            max_age=12,
-            price=14,
-            label="Niños (3-12 años)",
-        ),
-        AgeCategory(
-            name="ADULTS",
-            min_age=13,
-            max_age=64,
-            price=23,
-            label="Adultos (13-64 años)",
-        ),
-        AgeCategory(
-            name="RETIRED",
-            min_age=65,
-            max_age=None,
-            price=18,
-            label="Jubilados (+65 años)",
-        ),
+        AgeCategory("BABIES", None, 2, 0, "Bebés (0-2 años)"),
+        AgeCategory("KIDS", 3, 12, 14, "Niños (3-12 años)"),
+        AgeCategory("ADULTS", 13, 64, 23, "Adultos (13-64 años)"),
+        AgeCategory("RETIRED", 65, None, 18, "Jubilados (+65 años)"),
     ]
+
     print(
         "\nIntroduce la edad de cada visitante. Pulsa ENTER sin escribir nada para terminar.\n"
     )
