@@ -14,9 +14,6 @@ MOBILE_KEYS = {
 }
 
 
-def create_dictionary() -> dict: ...
-
-
 def message_to_keys(message: str) -> str:
     map_dict = {
         char: key * (i + 1)
