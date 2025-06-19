@@ -20,7 +20,7 @@ def message_to_keys(message: str) -> str:
         for key, chars in MOBILE_KEYS.items()
         for i, char in enumerate(chars)
     }
-    print(map_dict, "\n")
+
     return "".join([map_dict[char] for char in message.upper() if char in map_dict])
 
 
