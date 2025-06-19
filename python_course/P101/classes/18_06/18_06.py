@@ -14,10 +14,10 @@ MOBILE_KEYS = {
 }
 
 
-def message_to_keys(message: str) -> str:
+def message_to_keys(message: str, mobile_dict: dict[str, str]) -> str:
     map_dict = {
         char: key * (i + 1)
-        for key, chars in MOBILE_KEYS.items()
+        for key, chars in mobile_dict.items()
         for i, char in enumerate(chars)
     }
 
@@ -26,7 +26,7 @@ def message_to_keys(message: str) -> str:
 
 solution = "0"
 
-sol_1 = message_to_keys(" ")
+sol_1 = message_to_keys(" ", MOBILE_KEYS)
 print(sol_1)
 print(solution == sol_1)
 
@@ -43,7 +43,7 @@ class TestMobile:
         ],
     )
     def test_message_to_keys(self, input_text, expected_output):
-        assert message_to_keys(input_text) == expected_output
+        assert message_to_keys(input_text, MOBILE_KEYS) == expected_output
 
     def test_message_to_keys_empty(self):
-        assert message_to_keys("") == ""
+        assert message_to_keys("", MOBILE_KEYS) == ""
