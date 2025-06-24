@@ -7,10 +7,67 @@
   </head>
   <body>
     <h1>Forms...</h1>
-    <a
-      href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input"
+    <form
+      action="results.html"
+      method="get"
+      style="margin: 1%; width: 50%; align-items: center"
     >
-    <input type="button" value="Go to MDN input webpage" style="cursor: pointer;"/>
-    </a
+      <fieldset>
+        <label for="name">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Insert your name here..."
+          style="margin: 1%"
+          required
+        />
+        <br />
+        <label for="name">Last name</label>
+        <input
+          type="text"
+          id="last_name"
+          name="last_name"
+          placeholder="Insert your last name here..."
+          style="margin: 1%"
+        />
+        <br />
+      </fieldset>
+      <fieldset>
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Insert your email here..."
+          style="margin: 1%"
+        />
+        <br />
+        <label for="Phone">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="Insert your phone number here..."
+          style="margin: 1%"
+        />
+        <br />
+      </fieldset>
+      <fieldset>
+        <label for="color">What is you favourite color?</label>
+        <input type="color" id="color" name="color" style="margin: 1%" />
+        <br />
+        <textarea name="textare" id="textarea">Puedes escribir aquí</textarea>
+        <br />
+        <select name="color_select" id="color_select">
+          <option value="" selected>-- Select one colour --</option>
+          <option value="1">Red</option>
+          <option value="2">Green</option>
+          <option value="3">Blue</option>
+        </select>
+      </fieldset>
+
+      <input type="submit" value="Send information" />
+    </form>
   </body>
 </html>
