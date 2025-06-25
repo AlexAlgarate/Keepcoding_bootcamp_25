@@ -1,0 +1,27 @@
+div {
+  min-width: 250px;
+  min-height: 250px;
+  margin: 5px;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  position: static;
+  border: solid 10px black;
+}
+
+.padre {
+  border: solid 5px blue;
+  /* background-color: red; */
+}
+.hijo {
+  border: solid 5px red;
+  /* background-color: yellow; */
+  position: relative;
+}
+.nieto {
+  border: solid 5px green;
+  background-color: purple;
+  left: 40px;
+  right: 40px;
+  position: absolute;
+}
