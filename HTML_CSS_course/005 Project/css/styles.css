@@ -1,0 +1,44 @@
+body {
+  background-color: rgb(1, 31, 31);
+  color: white;
+}
+
+a {
+  color: #d65a31;
+  text-decoration: none;
+  font-family: 'Limelight', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+h1 {
+  font-family: 'UnifrakturMaguntia', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
+}
+
+h2 {
+  font-family: 'UnifrakturMaguntia', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 2rem;
+  color: lightgreen;
+}
+
+.logo,
+.logo span {
+  font-family: 'UnifrakturMaguntia', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
+  color: greenyellow;
+  text-transform: uppercase;
+}
+
+.logo span {
+  color: #d65a31;
+}
+p {
+  font-family: 'Audiowide';
+}
