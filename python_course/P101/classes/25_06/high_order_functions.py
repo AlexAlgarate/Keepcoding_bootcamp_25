@@ -28,16 +28,16 @@ def sum_all_numbers(list_numbers: list) -> int:
 def filter_list_numbers(list_numbers: list) -> list[int]:
     result = []
     for number in list_numbers:
-        if number % 2:
+        if number % 2 == 0:
             result.append(number)
     return result
 
 
 list_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print("add_1 without high order -->", add_1(list_numbers))
+print("add_1 without high order function -->", add_1(list_numbers))
 print("add_1 USING MAP -->", list(map(lambda x: x + 1, list_numbers)), "\n")
 
-print("square without high order -->", square(list_numbers))
+print("square without high order function -->", square(list_numbers))
 print("square USING MAP-->", list(map(lambda x: x**2, list_numbers)), "\n")
 
 print("Sum all numbers from a list --> ", sum_all_numbers(list_numbers))
@@ -48,7 +48,12 @@ print(
 )
 
 
-print("Using a function that filters numbers -->", filter_list_numbers(list_numbers))
 print(
-    "Filter numbers using FILTER -->", list(filter(lambda x: x % 2, list_numbers)), "\n"
+    "Using a function that filters numbers without high order function -->",
+    filter_list_numbers(list_numbers),
+)
+print(
+    "Filter numbers using FILTER -->",
+    list(filter(lambda x: x % 2 == 0, list_numbers)),
+    "\n",
 )
