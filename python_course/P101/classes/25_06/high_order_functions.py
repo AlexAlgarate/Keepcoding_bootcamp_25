@@ -25,7 +25,7 @@ def sum_all_numbers(list_numbers: list) -> int:
     return sum(list_numbers)
 
 
-def filter_list_numbers(list_numbers: list) -> list[int]:
+def filter_even_numbers(list_numbers: list) -> list[int]:
     result = []
     for number in list_numbers:
         if number % 2 == 0:
@@ -49,11 +49,11 @@ print(
 
 
 print(
-    "Using a function that filters numbers without high order function -->",
-    filter_list_numbers(list_numbers),
+    "Using a function that return the event numbers from a given list without high order function -->",
+    filter_even_numbers(list_numbers),
 )
 print(
-    "Filter numbers using FILTER -->",
+    "Filter even numbers using FILTER from functools-->",
     list(filter(lambda x: x % 2 == 0, list_numbers)),
     "\n",
 )
