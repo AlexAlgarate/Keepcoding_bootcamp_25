@@ -34,13 +34,13 @@ def filter_list_numbers(list_numbers: list) -> list[int]:
 
 
 list_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print("add_1 without high order -->", add_1(list_numbers), "\n")
+print("add_1 without high order -->", add_1(list_numbers))
 print("add_1 USING MAP -->", list(map(lambda x: x + 1, list_numbers)), "\n")
 
-print("square without high order -->", square(list_numbers), "\n")
+print("square without high order -->", square(list_numbers))
 print("square USING MAP-->", list(map(lambda x: x**2, list_numbers)), "\n")
 
-print("Sum all numbers from a list --> ", sum_all_numbers(list_numbers), "\n")
+print("Sum all numbers from a list --> ", sum_all_numbers(list_numbers))
 print(
     "Sum all numbers from a list using REDUCE --> ",
     reduce(lambda x, y: x + y, list_numbers),
@@ -48,9 +48,7 @@ print(
 )
 
 
-print(
-    "Using a function that filters numbers -->", filter_list_numbers(list_numbers), "\n"
-)
+print("Using a function that filters numbers -->", filter_list_numbers(list_numbers))
 print(
     "Filter numbers using FILTER -->", list(filter(lambda x: x % 2, list_numbers)), "\n"
 )
