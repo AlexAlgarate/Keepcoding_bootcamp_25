@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>007 Flex</title>
+    <style>
+      .flex-general {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        border: solid 2px;
+      }
+      .flex-inside {
+        border: solid 1px red;
+        width: 200px;
+        height: 200px;
+        margin: 10px;
+        justify-content: center;
+        align-items: center;
+        background-color: aquamarine;
+        text-align: center;
+        line-height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex-general">
+      <div class="flex-inside">1</div>
+      <div class="flex-inside">2</div>
+      <div class="flex-inside">3</div>
+      <div class="flex-inside">4</div>
+      <div class="flex-inside">5</div>
+      <div class="flex-inside">6</div>
+      <div class="flex-inside">7</div>
+      <div class="flex-inside">8</div>
+      <div class="flex-inside">9</div>
+      <div class="flex-inside">10</div>
+    </div>
+  </body>
+</html>
