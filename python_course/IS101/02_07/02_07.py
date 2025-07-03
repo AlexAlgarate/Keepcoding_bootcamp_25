@@ -35,10 +35,10 @@ def clicker_creator():
 
 
 mi_clicker = clicker_creator()
-print(mi_clicker())
-print(mi_clicker())
-print(mi_clicker("reset"))
-print(mi_clicker())
+# print(mi_clicker())
+# print(mi_clicker())
+# print(mi_clicker("reset"))
+# print(mi_clicker())
 
 
 class Day:
@@ -56,11 +56,11 @@ class Day:
 
 
 day = Day(5, 5, 2025)
-print(day.day, day.month, day.year)
+# print(day.day, day.month, day.year)
 
 
 class DNI:
-    _letters = "TRWAGMYFPDXBNJZSQVHLCKE"
+    LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE"
 
     def __init__(self, number: str, letter: str) -> None:
         self.number = number
@@ -75,7 +75,10 @@ class DNI:
             )
 
     def _letter_validator(self) -> None:
-        if not self._letters[int(self.number) % 23] == self.letter:
+        if self.letter not in self.LETTERS:
+            raise ValueError(f"La letra del DNI `{self.letter}` es inválida.")
+
+        if not self.LETTERS[int(self.number) % 23] == self.letter:
             raise ValueError(
                 "La letra no coincide con el número. Por favor, inserte una letra válida."
             )
@@ -84,4 +87,50 @@ class DNI:
 dni_Alex_correcto = DNI("03175669", "J")  # OK
 print(f"El número del DNI es --> {dni_Alex_correcto.number}")  # --> 03175669
 print(f"La letra del DNI es --> {dni_Alex_correcto.letter}")  # --> J
-dni_Alex_incorrecto = DNI("03175669", "A")  # ValueError
+# dni_Alex_incorrecto = DNI("03175669", "A")  # ValueError
+
+
+class DNIProperties:
+    LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE"
+
+    def __init__(self, number: str, letter: str) -> None:
+        self.number = number
+        self.letter = letter.upper()
+        self.validate_dni()
+
+    @property
+    def number(self) -> str:
+        return self._number
+
+    @number.setter
+    def number(self, value: str) -> None:
+        if len(value) != 8 or not value.isdigit():
+            raise ValueError(
+                "El número tiene que tener de 8 cifras y no puede contener letras."
+            )
+        self._number = value
+
+    @property
+    def letter(self) -> str:
+        return self._letter
+
+    @letter.setter
+    def letter(self, value: str) -> None:
+        if value not in self.LETTERS:
+            raise ValueError(f"La letra del DNI `{value}` es inválida.")
+
+        self._letter = value.upper()
+
+    def validate_dni(self) -> str:
+        expected_letter = self.LETTERS[int(self._number) % 23]
+        if self._letter != expected_letter:
+            raise ValueError(
+                f"La letra {self._letter} no coincide con el número {self._number}. Por favor, inserte una letra válida."
+            )
+
+        return "OOOOK"
+
+
+dni_Alex_correcto = DNIProperties("03175669", "J")  # OK
+print(f"El número del DNI es --> {dni_Alex_correcto.number}")  # --> 03175669
+print(f"La letra del DNI es --> {dni_Alex_correcto.letter}")  # --> J
