@@ -39,7 +39,7 @@ class DeckCards:
     def create_deck_of_cards(self) -> list[str]:
         return [number + suit for suit in self.suits for number in self.numbers]
 
-    def shuffle_cards(self) -> None:
+    def shuffle_cards_without_shuffle_method(self) -> None:
         for pos in range(len(self.deck)):
             new_pos = random.randint(0, len(self.deck) - 1)
             self.deck[pos], self.deck[new_pos] = (
@@ -47,19 +47,26 @@ class DeckCards:
                 self.deck[pos],
             )
 
+    def shuffle_cards(self):
+        return random.shuffle(self.deck)
+
 
 suits_sp = ["O", "C", "E", "B"]
 numbers_sp = ["A", "2", "3", "4", "5", "6", "7", "S", "C", "R"]
 
 deck_spain = DeckCards(suits=suits_sp, numbers=numbers_sp)
 print(f"Spanish deck --> {deck_spain.deck} \n")
-deck_spain.shuffle_cards()
+deck_spain.shuffle_cards_without_shuffle_method()
 print(f"Shuffled Spanish deck --> {deck_spain.deck} \n")
+deck_spain.shuffle_cards()
+print(f"Shuffled Spanish deck with random.shuffle method--> {deck_spain.deck} \n")
 
 suits_fr = ["♠", "♥", "♦", "♣"]
 numbers_fr = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
 deck_fr = DeckCards(suits=suits_fr, numbers=numbers_fr)
 print(f"French deck --> {deck_fr.deck}\n")
-deck_fr.shuffle_cards()
+deck_fr.shuffle_cards_without_shuffle_method()
 print(f"Shuffled French deck --> {deck_fr.deck}\n")
+deck_fr.shuffle_cards()
+print(f"Shuffled French deck random.shuffle method--> {deck_fr.deck}\n")
