@@ -50,17 +50,33 @@ class DeckCards:
     def shuffle_cards(self):
         return random.shuffle(self.deck)
 
+    def divide_up_cards(self, hand: int, players: int) -> list[list[str]]:
+        total_cards = hand * players
+        if total_cards > len(self.deck):
+            raise ValueError(
+                f"No hay suficientes cartas para repartir {hand} a {players} jugadores. Cartas restantes: {len(self.deck)}."
+            )
+        hands = [self.deck[i * hand : (i + 1) * hand] for i in range(players)]
+        del self.deck[:total_cards]
+
+        return hands
+
 
 suits_sp = ["O", "C", "E", "B"]
 numbers_sp = ["A", "2", "3", "4", "5", "6", "7", "S", "C", "R"]
 
 deck_spain = DeckCards(suits=suits_sp, numbers=numbers_sp)
-print(f"Spanish deck --> {deck_spain.deck} \n")
-deck_spain.shuffle_cards_without_shuffle_method()
-print(f"Shuffled Spanish deck --> {deck_spain.deck} \n")
+print(deck_spain.deck)
 deck_spain.shuffle_cards()
-print(f"Shuffled Spanish deck with random.shuffle method--> {deck_spain.deck} \n")
+print(f"\nShuffled cards --> {deck_spain.deck} \n")
 
+
+print("Let's play!")
+print(deck_spain.divide_up_cards(hand=4, players=9))
+
+
+"""
+Ejemplo con cartas de la baraja francesa.
 suits_fr = ["♠", "♥", "♦", "♣"]
 numbers_fr = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
@@ -70,3 +86,4 @@ deck_fr.shuffle_cards_without_shuffle_method()
 print(f"Shuffled French deck --> {deck_fr.deck}\n")
 deck_fr.shuffle_cards()
 print(f"Shuffled French deck random.shuffle method--> {deck_fr.deck}\n")
+"""
