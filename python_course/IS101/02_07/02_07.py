@@ -131,6 +131,6 @@ class DNIProperties:
         return "OOOOK"
 
 
-dni_Alex_correcto = DNIProperties("03175669", "J")  # OK
-print(f"El número del DNI es --> {dni_Alex_correcto.number}")  # --> 03175669
-print(f"La letra del DNI es --> {dni_Alex_correcto.letter}")  # --> J
+dni_Alex_correcto_properties = DNIProperties("03175669", "J")  # OK
+print(f"El número del DNI es --> {dni_Alex_correcto_properties.number}")  # --> 03175669
+print(f"La letra del DNI es --> {dni_Alex_correcto_properties.letter}")  # --> J
