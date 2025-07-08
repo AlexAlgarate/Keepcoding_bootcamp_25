@@ -48,7 +48,9 @@ def int_to_roman(number: int, roman_numeral_dict: dict[str, int]) -> str:
         raise ValueError("Los números romanos tradicionales llegan hasta 3999.")
 
     result = ""
-    for numeral, value in roman_numeral_dict.items():
+
+    sorted_dict = sorted(roman_numeral_dict.items(), key=lambda x: x[1], reverse=True)
+    for numeral, value in sorted_dict:
         while number >= value:
             result += numeral
             number -= value
@@ -64,22 +66,22 @@ dict_roman_numbers = {
     "D": 500,
     "M": 1000,
 }
-tens = build_tens(2530, dict_roman_numbers)
-print(tens)
+# tens = build_tens(2530, dict_roman_numbers)
+# print(tens)
 
 roman_numeral_dict = {
-    "M": 1000,
-    "CM": 900,
-    "D": 500,
-    "CD": 400,
-    "C": 100,
-    "XC": 90,
-    "L": 50,
-    "XL": 40,
-    "X": 10,
-    "IX": 9,
-    "V": 5,
-    "IV": 4,
     "I": 1,
+    "IV": 4,
+    "V": 5,
+    "IX": 9,
+    "X": 10,
+    "XL": 40,
+    "L": 50,
+    "XC": 90,
+    "C": 100,
+    "CD": 400,
+    "D": 500,
+    "CM": 900,
+    "M": 1000,
 }
-print(int_to_roman(154, roman_numeral_dict))
+print(int_to_roman(1054, roman_numeral_dict))
