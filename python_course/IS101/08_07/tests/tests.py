@@ -77,7 +77,7 @@ def test_invalid_roman_value_raises_error(roman: str) -> None:
 class TestRomanCalculator:
     @pytest.fixture
     def calculator(self) -> RomanCalculator:
-        return create_roman_calculator(ARABIC_TO_ROMAN_MAP, ROMAN_TO_ARABIC_MAP)
+        return create_roman_calculator()
 
     @pytest.fixture
     def conversion_cases(self) -> list[tuple[int, str]]:
@@ -109,10 +109,16 @@ class TestRomanCalculator:
         self, calculator, conversion_cases: list[tuple[int, str]]
     ) -> None:
         for number, expected_roman in conversion_cases:
-            assert calculator.from_arabic_to_roman(number) == expected_roman
+            assert (
+                calculator.from_arabic_to_roman(number, ARABIC_TO_ROMAN_MAP)
+                == expected_roman
+            )
 
     def test_valid_conversions_roman_to_arabic(
         self, calculator, conversion_cases: list[tuple[int, str]]
     ) -> None:
         for expected_number, roman in conversion_cases:
-            assert calculator.from_roman_to_arabic(roman) == expected_number
+            assert (
+                calculator.from_roman_to_arabic(roman, ROMAN_TO_ARABIC_MAP)
+                == expected_number
+            )

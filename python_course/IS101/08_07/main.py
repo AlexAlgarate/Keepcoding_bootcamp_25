@@ -75,21 +75,19 @@ def from_roman_to_arabic(roman: str) -> int:
 
 class IRomanCalculator(ABC):
     @abstractmethod
-    def from_arabic_to_roman(self, number: int) -> str:
+    def from_arabic_to_roman(
+        self, number: int, int_to_roman_map: dict[int, str]
+    ) -> str:
         pass
 
     @abstractmethod
-    def from_roman_to_arabic(self, roman_char: str) -> int:
+    def from_roman_to_arabic(
+        self, roman_char: str, roman_to_int_map: dict[str, int]
+    ) -> int:
         pass
 
 
 class RomanCalculator(IRomanCalculator):
-    def __init__(
-        self, int_to_roman_map: dict[int, str], roman_to_int_map: dict[str, int]
-    ) -> None:
-        self._int_to_roman = int_to_roman_map
-        self._roman_to_int = roman_to_int_map
-
     @staticmethod
     def is_valid_roman(roman: str) -> bool:
         roman_pattern = re.compile(
@@ -97,7 +95,9 @@ class RomanCalculator(IRomanCalculator):
         )
         return bool(roman_pattern.fullmatch(roman.upper()))
 
-    def from_arabic_to_roman(self, number: int) -> str:
+    def from_arabic_to_roman(
+        self, number: int, int_to_roman_map: dict[int, str]
+    ) -> str:
         if not 1 <= number <= 3999:
             raise ValueError(
                 f"El número tiene que estar entre 1 y 3999. El recibido es {number}"
@@ -105,7 +105,7 @@ class RomanCalculator(IRomanCalculator):
 
         result = []
 
-        for value, numeral in self._int_to_roman.items():
+        for value, numeral in int_to_roman_map.items():
             count, number = divmod(number, value)
 
             if count:
@@ -113,7 +113,7 @@ class RomanCalculator(IRomanCalculator):
 
         return "".join(result)
 
-    def from_roman_to_arabic(self, roman: str) -> int:
+    def from_roman_to_arabic(self, roman: str, roman_to_int_map: dict[str, int]) -> int:
         roman = roman.upper().strip()
 
         if not roman:
@@ -126,7 +126,7 @@ class RomanCalculator(IRomanCalculator):
         previous = 0
 
         for char in reversed(roman):
-            value = self._roman_to_int[char]
+            value = roman_to_int_map[char]
 
             if value < previous:
                 result -= value
@@ -137,17 +137,19 @@ class RomanCalculator(IRomanCalculator):
         return result
 
 
-def create_roman_calculator(
-    int_to_roman_map: dict[int, str], roman_to_int_map: dict[str, int]
-) -> RomanCalculator:
-    return RomanCalculator(int_to_roman_map, roman_to_int_map)
+def create_roman_calculator() -> RomanCalculator:
+    return RomanCalculator()
 
 
 if __name__ == "__main__":
-    calculator = create_roman_calculator(ARABIC_TO_ROMAN_MAP, ROMAN_TO_ARABIC_MAP)
+    calculator = create_roman_calculator()
 
     number = 1234
     roman = "DCLXVI"
 
-    print(f"From {number} to {calculator.from_arabic_to_roman(number)}\n")
-    print(f"From {roman} to {calculator.from_roman_to_arabic(roman)}\n")
+    print(
+        f"From {number} to {calculator.from_arabic_to_roman(number, ARABIC_TO_ROMAN_MAP)}\n"
+    )
+    print(
+        f"From {roman} to {calculator.from_roman_to_arabic(roman, ROMAN_TO_ARABIC_MAP)}\n"
+    )
