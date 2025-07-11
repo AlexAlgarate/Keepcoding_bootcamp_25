@@ -1,8 +1,6 @@
 import pytest
 
 from main import (
-    ARABIC_TO_ROMAN_MAP,
-    ROMAN_TO_ARABIC_MAP,
     RomanCalculator,
     create_roman_calculator,
     from_arabic_to_roman,
@@ -111,10 +109,7 @@ class TestRomanCalculatorArabicToRoman:
         self, calculator: RomanCalculator, conversion_cases: list[tuple[int, str]]
     ) -> None:
         for number, expected_roman in conversion_cases:
-            assert (
-                calculator.from_arabic_to_roman(number, ARABIC_TO_ROMAN_MAP)
-                == expected_roman
-            )
+            assert calculator.from_arabic_to_roman(number) == expected_roman
 
     @pytest.mark.parametrize(
         "invalid_number",
@@ -126,7 +121,7 @@ class TestRomanCalculatorArabicToRoman:
         with pytest.raises(
             ValueError, match="El número tiene que estar entre 1 y 3999."
         ):
-            calculator.from_arabic_to_roman(invalid_number, ARABIC_TO_ROMAN_MAP)
+            calculator.from_arabic_to_roman(invalid_number)
 
 
 class TestRomanCalculatorRomantoArabic:
@@ -134,10 +129,7 @@ class TestRomanCalculatorRomantoArabic:
         self, calculator, conversion_cases: list[tuple[int, str]]
     ) -> None:
         for expected_number, roman in conversion_cases:
-            assert (
-                calculator.from_roman_to_arabic(roman, ROMAN_TO_ARABIC_MAP)
-                == expected_number
-            )
+            assert calculator.from_roman_to_arabic(roman) == expected_number
 
     @pytest.mark.parametrize(
         "invalid_roman",
@@ -162,16 +154,16 @@ class TestRomanCalculatorRomantoArabic:
         self, calculator: RomanCalculator, invalid_roman: str
     ) -> None:
         with pytest.raises(ValueError, match="Número romano no válido"):
-            calculator.from_roman_to_arabic(invalid_roman, ROMAN_TO_ARABIC_MAP)
+            calculator.from_roman_to_arabic(invalid_roman)
 
     def test_whitespace_only_string(self, calculator: RomanCalculator) -> None:
         with pytest.raises(ValueError) as exctype:
-            calculator.from_roman_to_arabic("   ", ROMAN_TO_ARABIC_MAP)
+            calculator.from_roman_to_arabic("   ")
             assert "Cadena romana vacía" == exctype.value
 
     def test_empty_string(self, calculator: RomanCalculator) -> None:
         with pytest.raises(ValueError) as exctype:
-            calculator.from_roman_to_arabic("", ROMAN_TO_ARABIC_MAP)
+            calculator.from_roman_to_arabic("")
             assert "Cadena romana vacía" == exctype.value
 
     @pytest.mark.parametrize(
@@ -185,16 +177,11 @@ class TestRomanCalculatorRomantoArabic:
     def test_case_insensitive_roman_to_arabic(
         self, calculator: RomanCalculator, insensitive_cases: str, expected_arabics: int
     ) -> None:
-        assert (
-            calculator.from_roman_to_arabic(insensitive_cases, ROMAN_TO_ARABIC_MAP)
-            == expected_arabics
-        )
+        assert calculator.from_roman_to_arabic(insensitive_cases) == expected_arabics
 
     def test_whitespace_handling(self, calculator: RomanCalculator):
-        assert (
-            calculator.from_roman_to_arabic("  MDXLIX  ", ROMAN_TO_ARABIC_MAP) == 1549
-        )
-        assert calculator.from_roman_to_arabic("\tVIII\n", ROMAN_TO_ARABIC_MAP) == 8
+        assert calculator.from_roman_to_arabic("  MDXLIX  ") == 1549
+        assert calculator.from_roman_to_arabic("\tVIII\n") == 8
 
 
 class TestRomanCalculatorValidation:
@@ -219,16 +206,16 @@ class TestRomanCalculatorRoundTrip:
         self, calculator: RomanCalculator, conversion_cases: dict[int, str]
     ) -> None:
         for _, roman in conversion_cases:
-            number = calculator.from_roman_to_arabic(roman, ROMAN_TO_ARABIC_MAP)
-            result = calculator.from_arabic_to_roman(number, ARABIC_TO_ROMAN_MAP)
+            number = calculator.from_roman_to_arabic(roman)
+            result = calculator.from_arabic_to_roman(number)
             assert result == roman
 
     def test_arabic_to_roman_to_arabic(
         self, calculator: RomanCalculator, conversion_cases: dict[int, str]
     ) -> None:
         for number, _ in conversion_cases:
-            roman = calculator.from_arabic_to_roman(number, ARABIC_TO_ROMAN_MAP)
-            result = calculator.from_roman_to_arabic(roman, ROMAN_TO_ARABIC_MAP)
+            roman = calculator.from_arabic_to_roman(number)
+            result = calculator.from_roman_to_arabic(roman)
             assert result == number
 
 
@@ -237,10 +224,10 @@ class TestRomanCalculatorCustomMaps:
         custom_int_to_roman = {10: "X", 5: "V", 1: "I"}
         custom_roman_to_int = {"X": 10, "V": 5, "I": 1}
 
-        assert calculator.from_arabic_to_roman(7, custom_int_to_roman) == "VII"
-        assert calculator.from_roman_to_arabic("VII", custom_roman_to_int) == 7
+        assert calculator.from_arabic_to_roman(7) == "VII"
+        assert calculator.from_roman_to_arabic("VII") == 7
 
-    def test_empty_maps_raise_error(self, calculator: RomanCalculator) -> None:
-        with pytest.raises(KeyError):
-            calculator.from_arabic_to_roman(1, {})
-            calculator.from_roman_to_arabic("I", {})
+    # def test_empty_maps_raise_error(self, calculator: RomanCalculator) -> None:
+    #     with pytest.raises(KeyError):
+    #         calculator.from_arabic_to_roman(1)
+    #         calculator.from_roman_to_arabic("I")
