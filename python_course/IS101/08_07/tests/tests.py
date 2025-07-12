@@ -77,39 +77,37 @@ def calculator() -> RomanCalculator:
     return create_roman_calculator()
 
 
-@pytest.fixture
-def conversion_cases() -> list[tuple[int, str]]:
-    return [
-        (1, "I"),
-        (2, "II"),
-        (3, "III"),
-        (4, "IV"),
-        (5, "V"),
-        (9, "IX"),
-        (10, "X"),
-        (27, "XXVII"),
-        (48, "XLVIII"),
-        (59, "LIX"),
-        (93, "XCIII"),
-        (141, "CXLI"),
-        (163, "CLXIII"),
-        (402, "CDII"),
-        (575, "DLXXV"),
-        (911, "CMXI"),
-        (1024, "MXXIV"),
-        (1234, "MCCXXXIV"),
-        (1549, "MDXLIX"),
-        (3000, "MMM"),
-        (3999, "MMMCMXCIX"),
-    ]
-
-
 class TestRomanCalculatorArabicToRoman:
+    @pytest.mark.parametrize(
+        "input_values,expected_values",
+        [
+            (1, "I"),
+            (2, "II"),
+            (3, "III"),
+            (4, "IV"),
+            (5, "V"),
+            (9, "IX"),
+            (10, "X"),
+            (27, "XXVII"),
+            (48, "XLVIII"),
+            (59, "LIX"),
+            (93, "XCIII"),
+            (141, "CXLI"),
+            (163, "CLXIII"),
+            (402, "CDII"),
+            (575, "DLXXV"),
+            (911, "CMXI"),
+            (1024, "MXXIV"),
+            (1234, "MCCXXXIV"),
+            (1549, "MDXLIX"),
+            (3000, "MMM"),
+            (3999, "MMMCMXCIX"),
+        ],
+    )
     def test_valid_conversions_arabic_to_roman(
-        self, calculator: RomanCalculator, conversion_cases: list[tuple[int, str]]
+        self, calculator: RomanCalculator, input_values: int, expected_values: str
     ) -> None:
-        for number, expected_roman in conversion_cases:
-            assert calculator.from_arabic_to_roman(number) == expected_roman
+        assert calculator.from_arabic_to_roman(input_values) == expected_values
 
     @pytest.mark.parametrize(
         "invalid_number",
@@ -125,11 +123,36 @@ class TestRomanCalculatorArabicToRoman:
 
 
 class TestRomanCalculatorRomantoArabic:
+    @pytest.mark.parametrize(
+        "expected_values,input_values",
+        [
+            (1, "I"),
+            (2, "II"),
+            (3, "III"),
+            (4, "IV"),
+            (5, "V"),
+            (9, "IX"),
+            (10, "X"),
+            (27, "XXVII"),
+            (48, "XLVIII"),
+            (59, "LIX"),
+            (93, "XCIII"),
+            (141, "CXLI"),
+            (163, "CLXIII"),
+            (402, "CDII"),
+            (575, "DLXXV"),
+            (911, "CMXI"),
+            (1024, "MXXIV"),
+            (1234, "MCCXXXIV"),
+            (1549, "MDXLIX"),
+            (3000, "MMM"),
+            (3999, "MMMCMXCIX"),
+        ],
+    )
     def test_valid_conversions_roman_to_arabic(
-        self, calculator, conversion_cases: list[tuple[int, str]]
+        self, calculator, input_values: int, expected_values: str
     ) -> None:
-        for expected_number, roman in conversion_cases:
-            assert calculator.from_roman_to_arabic(roman) == expected_number
+        assert calculator.from_roman_to_arabic(input_values) == expected_values
 
     @pytest.mark.parametrize(
         "invalid_roman",
@@ -202,32 +225,68 @@ class TestRomanCalculatorValidation:
 
 
 class TestRomanCalculatorRoundTrip:
+    @pytest.mark.parametrize(
+        "non_used_input,expected_roman",
+        [
+            (1, "I"),
+            (2, "II"),
+            (3, "III"),
+            (4, "IV"),
+            (5, "V"),
+            (9, "IX"),
+            (10, "X"),
+            (27, "XXVII"),
+            (48, "XLVIII"),
+            (59, "LIX"),
+            (93, "XCIII"),
+            (141, "CXLI"),
+            (163, "CLXIII"),
+            (402, "CDII"),
+            (575, "DLXXV"),
+            (911, "CMXI"),
+            (1024, "MXXIV"),
+            (1234, "MCCXXXIV"),
+            (1549, "MDXLIX"),
+            (3000, "MMM"),
+            (3999, "MMMCMXCIX"),
+        ],
+    )
     def test_roman_to_arabic_to_roman(
-        self, calculator: RomanCalculator, conversion_cases: dict[int, str]
+        self, calculator: RomanCalculator, expected_roman: str, non_used_input: int
     ) -> None:
-        for _, roman in conversion_cases:
-            number = calculator.from_roman_to_arabic(roman)
-            result = calculator.from_arabic_to_roman(number)
-            assert result == roman
+        number = calculator.from_roman_to_arabic(expected_roman)
+        result = calculator.from_arabic_to_roman(number)
+        assert result == expected_roman
 
+    @pytest.mark.parametrize(
+        "expected_arabic, non_used_roman",
+        [
+            (1, "I"),
+            (2, "II"),
+            (3, "III"),
+            (4, "IV"),
+            (5, "V"),
+            (9, "IX"),
+            (10, "X"),
+            (27, "XXVII"),
+            (48, "XLVIII"),
+            (59, "LIX"),
+            (93, "XCIII"),
+            (141, "CXLI"),
+            (163, "CLXIII"),
+            (402, "CDII"),
+            (575, "DLXXV"),
+            (911, "CMXI"),
+            (1024, "MXXIV"),
+            (1234, "MCCXXXIV"),
+            (1549, "MDXLIX"),
+            (3000, "MMM"),
+            (3999, "MMMCMXCIX"),
+        ],
+    )
     def test_arabic_to_roman_to_arabic(
-        self, calculator: RomanCalculator, conversion_cases: dict[int, str]
+        self, calculator: RomanCalculator, expected_arabic: int, non_used_roman: str
     ) -> None:
-        for number, _ in conversion_cases:
-            roman = calculator.from_arabic_to_roman(number)
-            result = calculator.from_roman_to_arabic(roman)
-            assert result == number
-
-
-class TestRomanCalculatorCustomMaps:
-    def test_custom_maps(self, calculator: RomanCalculator) -> None:
-        custom_int_to_roman = {10: "X", 5: "V", 1: "I"}
-        custom_roman_to_int = {"X": 10, "V": 5, "I": 1}
-
-        assert calculator.from_arabic_to_roman(7) == "VII"
-        assert calculator.from_roman_to_arabic("VII") == 7
-
-    # def test_empty_maps_raise_error(self, calculator: RomanCalculator) -> None:
-    #     with pytest.raises(KeyError):
-    #         calculator.from_arabic_to_roman(1)
-    #         calculator.from_roman_to_arabic("I")
+        roman = calculator.from_arabic_to_roman(expected_arabic)
+        result = calculator.from_roman_to_arabic(roman)
+        assert result == expected_arabic
