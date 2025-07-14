@@ -223,6 +223,15 @@ class TestRomanCalculatorValidation:
     def test_invalid_roman_patterns(self, invalid_roman):
         assert RomanCalculator.is_valid_roman(invalid_roman) is False
 
+    def test_raise_exception_when_you_try_to_modify_dictionaries(
+        self, calculator: RomanCalculator
+    ):
+        with pytest.raises(TypeError) as exc:
+            calculator._arabic_to_roman_map[123] = "123"  # type: ignore
+
+            calculator.from_arabic_to_roman(123)
+            assert "'mappingproxy' object does not support item assignment" == exc.value
+
 
 class TestRomanCalculatorRoundTrip:
     @pytest.mark.parametrize(
@@ -290,3 +299,21 @@ class TestRomanCalculatorRoundTrip:
         roman = calculator.from_arabic_to_roman(expected_arabic)
         result = calculator.from_roman_to_arabic(roman)
         assert result == expected_arabic
+
+
+class TestRomanCalculatorLargeArabics:
+    @pytest.mark.parametrize(
+        "input_arabic, expected_roman",
+        [
+            (int(6.022e23), "DCII•••••••CC••••••XXVII••CCLXII•CMLXXVI"),
+            (49123123, "XLIX••CXXIII•CXXIII"),
+            (54125, "LIV•CXXV"),
+            (4004, "IV•IV"),
+            (17898, "XVII•DCCCXCVIII"),
+            (392145, "CCCXCII•CXLV"),
+        ],
+    )
+    def test_valid_large_numbers(
+        self, calculator: RomanCalculator, input_arabic: int, expected_roman: str
+    ) -> None:
+        assert calculator.from_big_arabic_to_roman(input_arabic) == expected_roman
