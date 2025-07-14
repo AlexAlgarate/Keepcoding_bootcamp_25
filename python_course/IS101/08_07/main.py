@@ -171,7 +171,7 @@ class RomanCalculator(IRomanCalculator):
             result += partial_roman + level_sufix
         return result
 
-    def to_roman_tuples(self, roman: str) -> list:
+    def to_roman_tuples(self, roman: str) -> list[tuple[str, int]]:
         groups = roman.split(self.THOUSAND_INDICATOR)
 
         result = []
@@ -188,6 +188,7 @@ class RomanCalculator(IRomanCalculator):
 
     def from_big_roman_to_arabic(self, roman: str) -> int:
         groups = self.to_roman_tuples(roman)
+
         result = 0
 
         for roman_number, exponent in groups:
