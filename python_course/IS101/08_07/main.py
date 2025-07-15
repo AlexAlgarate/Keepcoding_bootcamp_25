@@ -178,13 +178,17 @@ class RomanCalculator(IRomanCalculator):
 
         for group in groups:
             if group:
-                _tuple = [group, 1]
-                result.append(_tuple)
-            else:
-                _tuple[1] += 1
+                result.append((group, 1))
 
-        result[-1][1] -= 1
-        return list(map(lambda x: tuple(x), result))
+            else:
+                last_group, count = result.pop()
+                result.append((last_group, count + 1))
+
+        if result:
+            last_group, count = result.pop()
+            result.append((last_group, count - 1))
+
+        return result
 
     def from_big_roman_to_arabic(self, roman: str) -> int:
         groups = self.to_roman_tuples(roman)
@@ -207,12 +211,12 @@ if __name__ == "__main__":
     calculator = create_roman_calculator()
 
     number_under_4000 = 3999  # MMMCMXCIX
-    number = 49123123  # XLIX••CXXIII•CXXIII
     avogradro_number = int(6.022e23)  # DCII•••••••CC••••••XXVII••CCLXII•CMLXXVI
 
-    number = 4004000
     number = 3999999  # "MMMCMXCIX•CMXCIX
+    number = 4004000
+    number = 49123123  # XLIX••CXXIII•CXXIII
     big_roman = calculator.from_big_arabic_to_roman(number)
-
+    print("big roman", big_roman)
     roman = "DCII•••VI••CCXXII•"
-    print(f"From big roman to arabic: {calculator.from_big_roman_to_arabic(roman)}")
+    print(f"From big roman to arabic: {calculator.from_big_roman_to_arabic(big_roman)}")
