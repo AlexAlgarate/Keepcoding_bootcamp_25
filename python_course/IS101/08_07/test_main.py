@@ -288,3 +288,8 @@ class TestRomanCalculatorLargeRomans:
         self, calculator: RomanCalculator, input_roman: str, expected_number: int
     ) -> None:
         assert calculator.from_roman_to_arabic(input_roman) == expected_number
+
+
+# class TestValidArabicRange:
+#     def test_valid_arabic_range(self, number: int, min: int, max: int) -> None:
+#         pass
