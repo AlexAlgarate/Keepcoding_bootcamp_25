@@ -89,7 +89,7 @@ class RomanCalculator(IRomanCalculator):
 
         return roman
 
-    def from_arabic_smaller_4000_to_roman(self, number: int) -> str:
+    def _from_arabic_smaller_4000_to_roman(self, number: int) -> str:
         self._validate_arabic_range(
             number, self.MIN_ROMAN_VALUE, self.MAX_STANDARD_ROMAN
         )
@@ -138,13 +138,16 @@ class RomanCalculator(IRomanCalculator):
         return parts
 
     def from_arabic_to_roman(self, number: int) -> str:
-        if number < 1:
-            raise ValueError(
-                f"El número tiene que ser mayor de 1. El recibido es -- {number} --"
+        if not isinstance(number, int):
+            raise NumberOutOfRangeError("El número debe ser un entero")
+
+        if number <= self.MIN_ROMAN_VALUE:
+            raise NumberOutOfRangeError(
+                f"El número tiene que ser mayor o igual a {self.MIN_ROMAN_VALUE}. El recibido es {number}"
             )
 
-        if number <= 3999:
-            return self.from_arabic_smaller_4000_to_roman(number)
+        if number <= self.MAX_STANDARD_ROMAN:
+            return self._from_arabic_smaller_4000_to_roman(number)
 
         groups_of_numbers = self._split_into_thousands(number)
 
@@ -155,7 +158,7 @@ class RomanCalculator(IRomanCalculator):
             if group == 0:
                 continue
 
-            partial_roman = self.from_arabic_smaller_4000_to_roman(group)
+            partial_roman = self._from_arabic_smaller_4000_to_roman(group)
 
             level_sufix = self.THOUSAND_INDICATOR * (levels - index - 1)
             result += partial_roman + level_sufix

@@ -44,7 +44,7 @@ class TestRomanCalculatorArabicToRoman:
         self, calculator: RomanCalculator, input_values: int, expected_values: str
     ) -> None:
         assert (
-            calculator.from_arabic_smaller_4000_to_roman(input_values)
+            calculator._from_arabic_smaller_4000_to_roman(input_values)
             == expected_values
         )
 
@@ -59,7 +59,7 @@ class TestRomanCalculatorArabicToRoman:
             NumberOutOfRangeError,
             match="El número tiene que estar entre 1 y 3999.",
         ):
-            calculator.from_arabic_smaller_4000_to_roman(invalid_number)
+            calculator._from_arabic_smaller_4000_to_roman(invalid_number)
 
 
 class TestRomanCalculatorRomantoArabic:
@@ -175,7 +175,7 @@ class TestRomanCalculatorValidation:
         with pytest.raises(TypeError) as exc:
             calculator._arabic_to_roman_map[123] = "123"  # type: ignore
 
-            calculator.from_arabic_smaller_4000_to_roman(123)
+            calculator._from_arabic_smaller_4000_to_roman(123)
             assert "'mappingproxy' object does not support item assignment" == exc.value
 
 
@@ -210,7 +210,7 @@ class TestRomanCalculatorRoundTrip:
         self, calculator: RomanCalculator, expected_roman: str, non_used_input: int
     ) -> None:
         number = calculator.from_roman_smaller_4000_to_arabic(expected_roman)
-        result = calculator.from_arabic_smaller_4000_to_roman(number)
+        result = calculator._from_arabic_smaller_4000_to_roman(number)
         assert result == expected_roman
 
     @pytest.mark.parametrize(
@@ -242,7 +242,7 @@ class TestRomanCalculatorRoundTrip:
     def test_arabic_to_roman_to_arabic(
         self, calculator: RomanCalculator, expected_arabic: int, non_used_roman: str
     ) -> None:
-        roman = calculator.from_arabic_smaller_4000_to_roman(expected_arabic)
+        roman = calculator._from_arabic_smaller_4000_to_roman(expected_arabic)
         result = calculator.from_roman_smaller_4000_to_arabic(roman)
         assert result == expected_arabic
 
