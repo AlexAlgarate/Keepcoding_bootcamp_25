@@ -164,9 +164,24 @@ class RomanCalculator(IRomanCalculator):
             result += partial_roman + level_sufix
         return result
 
-    def _to_roman_tuples(self, roman: str) -> list[tuple[str, int]]:
-        groups = roman.split(self.THOUSAND_INDICATOR)
+    def _validate_extended_roman_string(self, roman: str) -> str:
+        roman = self._validate_roman_string(roman)
 
+        allowed_chars = self._roman_to_arabic_map.keys() | self.THOUSAND_INDICATOR
+
+        if not all(char in allowed_chars for char in roman):
+            invalid_chars = set(roman) - allowed_chars
+            raise InvalidRomanNumeralError(
+                f"Caracteres inválidos en número romano {invalid_chars}"
+            )
+
+        return roman
+
+    def _parse_roman_groups(self, roman: str) -> list[tuple[str, int]]:
+        if self.THOUSAND_INDICATOR not in roman:
+            return [(roman, 0)]
+
+        groups = roman.split(self.THOUSAND_INDICATOR)
         result = []
 
         for group in groups:
@@ -174,6 +189,8 @@ class RomanCalculator(IRomanCalculator):
                 result.append((group, 1))
 
             else:
+                if not result:
+                    raise InvalidRomanNumeralError("Formato de número romano inválido.")
                 last_group, count = result.pop()
                 result.append((last_group, count + 1))
 
@@ -184,14 +201,30 @@ class RomanCalculator(IRomanCalculator):
         return result
 
     def from_roman_to_arabic(self, roman: str) -> int:
-        groups = self._to_roman_tuples(roman)
+        roman = self._validate_extended_roman_string(roman)
+
+        try:
+            groups = self._parse_roman_groups(roman)
+        except InvalidRomanNumeralError:
+            raise
+        except Exception as e:
+            raise InvalidRomanNumeralError(f"Error al procesar el número romano: {e}")
 
         result = 0
 
         for roman_number, exponent in groups:
-            partial_arabic = self.from_roman_smaller_4000_to_arabic(roman_number)
+            if not roman:
+                continue
 
-            result += partial_arabic * (1000**exponent)
+            try:
+                partial_arabic = self.from_roman_smaller_4000_to_arabic(roman_number)
+                result += partial_arabic * (1000**exponent)
+            except (InvalidRomanNumeralError, NumberOutOfRangeError):
+                raise
+            except Exception as e:
+                raise InvalidRomanNumeralError(
+                    f"Error al convertir parte del número romano: {e}"
+                )
 
         return result
 
