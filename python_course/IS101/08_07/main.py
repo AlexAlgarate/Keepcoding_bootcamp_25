@@ -69,9 +69,6 @@ class RomanCalculator(IRomanCalculator):
 
     @staticmethod
     def _validate_arabic_range(number: int, min: int, max: int) -> None:
-        if not isinstance(number, int):
-            raise NumberOutOfRangeError("El número debe ser un entero")
-
         if not min <= number <= max:
             raise NumberOutOfRangeError(
                 f"El número tiene que estar entre {min} y {max}. El recibido es {number}"
@@ -90,6 +87,9 @@ class RomanCalculator(IRomanCalculator):
         return roman
 
     def _from_arabic_smaller_4000_to_roman(self, number: int) -> str:
+        if not isinstance(number, int):
+            raise NumberOutOfRangeError("El número debe ser un entero")
+
         self._validate_arabic_range(
             number, self.MIN_ROMAN_VALUE, self.MAX_STANDARD_ROMAN
         )
