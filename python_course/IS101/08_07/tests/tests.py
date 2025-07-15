@@ -43,7 +43,10 @@ class TestRomanCalculatorArabicToRoman:
     def test_valid_conversions_arabic_to_roman(
         self, calculator: RomanCalculator, input_values: int, expected_values: str
     ) -> None:
-        assert calculator.from_arabic_to_roman(input_values) == expected_values
+        assert (
+            calculator._from_arabic_smaller_4000_to_roman(input_values)
+            == expected_values
+        )
 
     @pytest.mark.parametrize(
         "invalid_number",
