@@ -141,7 +141,7 @@ class RomanCalculator(IRomanCalculator):
         if not isinstance(number, int):
             raise NumberOutOfRangeError("El número debe ser un entero")
 
-        if number <= self.MIN_ROMAN_VALUE:
+        if number < self.MIN_ROMAN_VALUE:
             raise NumberOutOfRangeError(
                 f"El número tiene que ser mayor o igual a {self.MIN_ROMAN_VALUE}. El recibido es {number}"
             )
