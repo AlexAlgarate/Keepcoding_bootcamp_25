@@ -1,6 +1,11 @@
 import pytest
 
-from main import RomanCalculator, create_roman_calculator
+from main import (
+    InvalidRomanNumeralError,
+    NumberOutOfRangeError,
+    RomanCalculator,
+    create_roman_calculator,
+)
 
 
 @pytest.fixture
@@ -51,7 +56,8 @@ class TestRomanCalculatorArabicToRoman:
         self, calculator: RomanCalculator, invalid_number: int
     ) -> None:
         with pytest.raises(
-            ValueError, match="El número tiene que estar entre 1 y 3999."
+            NumberOutOfRangeError,
+            match="El número tiene que estar entre 1 y 3999.",
         ):
             calculator.from_arabic_smaller_4000_to_roman(invalid_number)
 
@@ -113,16 +119,16 @@ class TestRomanCalculatorRomantoArabic:
     def test_invalid_roman_numerals(
         self, calculator: RomanCalculator, invalid_roman: str
     ) -> None:
-        with pytest.raises(ValueError, match="Número romano no válido"):
+        with pytest.raises(InvalidRomanNumeralError, match="Número romano no válido"):
             calculator.from_roman_smaller_4000_to_arabic(invalid_roman)
 
     def test_whitespace_only_string(self, calculator: RomanCalculator) -> None:
-        with pytest.raises(ValueError) as exctype:
+        with pytest.raises(InvalidRomanNumeralError) as exctype:
             calculator.from_roman_smaller_4000_to_arabic("   ")
             assert "Cadena romana vacía" == exctype.value
 
     def test_empty_string(self, calculator: RomanCalculator) -> None:
-        with pytest.raises(ValueError) as exctype:
+        with pytest.raises(InvalidRomanNumeralError) as exctype:
             calculator.from_roman_smaller_4000_to_arabic("")
             assert "Cadena romana vacía" == exctype.value
 
