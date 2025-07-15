@@ -1,10 +1,13 @@
 import pytest
 
 from main import (
+    ARABIC_TO_ROMAN_MAP,
+    ROMAN_TO_ARABIC_MAP,
     InvalidRomanNumeralError,
     NumberOutOfRangeError,
     RomanCalculator,
     RomanNumeralValidator,
+    StandardRomanConverter,
     create_roman_calculator,
 )
 
@@ -12,225 +15,6 @@ from main import (
 @pytest.fixture
 def calculator() -> RomanCalculator:
     return create_roman_calculator()
-
-
-class TestRomanCalculatorArabicToRoman:
-    @pytest.mark.parametrize(
-        "input_values,expected_values",
-        [
-            (1, "I"),
-            (2, "II"),
-            (3, "III"),
-            (4, "IV"),
-            (5, "V"),
-            (9, "IX"),
-            (10, "X"),
-            (27, "XXVII"),
-            (48, "XLVIII"),
-            (59, "LIX"),
-            (93, "XCIII"),
-            (141, "CXLI"),
-            (163, "CLXIII"),
-            (402, "CDII"),
-            (575, "DLXXV"),
-            (911, "CMXI"),
-            (1024, "MXXIV"),
-            (1234, "MCCXXXIV"),
-            (1549, "MDXLIX"),
-            (3000, "MMM"),
-            (3999, "MMMCMXCIX"),
-        ],
-    )
-    def test_valid_conversions_arabic_to_roman(
-        self, calculator: RomanCalculator, input_values: int, expected_values: str
-    ) -> None:
-        assert (
-            calculator._from_arabic_smaller_4000_to_roman(input_values)
-            == expected_values
-        )
-
-    @pytest.mark.parametrize(
-        "invalid_number",
-        [0, -1, -10, 4000, 4001, 10000],
-    )
-    def test_invalid_conversions_arabic_to_roman(
-        self, calculator: RomanCalculator, invalid_number: int
-    ) -> None:
-        with pytest.raises(
-            NumberOutOfRangeError,
-            match="El número tiene que estar entre 1 y 3999.",
-        ):
-            calculator._from_arabic_smaller_4000_to_roman(invalid_number)
-
-
-class TestRomanCalculatorRomantoArabic:
-    @pytest.mark.parametrize(
-        "expected_values,input_values",
-        [
-            (1, "I"),
-            (2, "II"),
-            (3, "III"),
-            (4, "IV"),
-            (5, "V"),
-            (9, "IX"),
-            (10, "X"),
-            (27, "XXVII"),
-            (48, "XLVIII"),
-            (59, "LIX"),
-            (93, "XCIII"),
-            (141, "CXLI"),
-            (163, "CLXIII"),
-            (402, "CDII"),
-            (575, "DLXXV"),
-            (911, "CMXI"),
-            (1024, "MXXIV"),
-            (1234, "MCCXXXIV"),
-            (1549, "MDXLIX"),
-            (3000, "MMM"),
-            (3999, "MMMCMXCIX"),
-        ],
-    )
-    def test_valid_conversions_roman_to_arabic(
-        self, calculator, input_values: int, expected_values: str
-    ) -> None:
-        assert (
-            calculator.from_roman_smaller_4000_to_arabic(input_values)
-            == expected_values
-        )
-
-    @pytest.mark.parametrize(
-        "invalid_roman",
-        [
-            "A",
-            "BXI",
-            "123",
-            "!@#",
-            "MMMMM",
-            "IL",
-            "xm",
-            "VX",
-            "IVIV",
-            "VV",
-            "DM",
-            "LC",
-            "XLXL",
-            "CMCM",
-        ],
-    )
-    def test_invalid_roman_numerals(
-        self, calculator: RomanCalculator, invalid_roman: str
-    ) -> None:
-        with pytest.raises(InvalidRomanNumeralError, match="Número romano no válido"):
-            calculator.from_roman_smaller_4000_to_arabic(invalid_roman)
-
-    def test_whitespace_only_string(self, calculator: RomanCalculator) -> None:
-        with pytest.raises(InvalidRomanNumeralError) as exctype:
-            calculator.from_roman_smaller_4000_to_arabic("   ")
-            assert "Cadena romana vacía" == exctype.value
-
-    def test_empty_string(self, calculator: RomanCalculator) -> None:
-        with pytest.raises(InvalidRomanNumeralError) as exctype:
-            calculator.from_roman_smaller_4000_to_arabic("")
-            assert "Cadena romana vacía" == exctype.value
-
-    @pytest.mark.parametrize(
-        "insensitive_cases,expected_arabics",
-        [
-            ("mdxlix", 1549),
-            ("mDxLiX", 1549),
-            ("MdXlix", 1549),
-        ],
-    )
-    def test_case_insensitive_roman_to_arabic(
-        self, calculator: RomanCalculator, insensitive_cases: str, expected_arabics: int
-    ) -> None:
-        assert (
-            calculator.from_roman_smaller_4000_to_arabic(insensitive_cases)
-            == expected_arabics
-        )
-
-    def test_whitespace_handling(self, calculator: RomanCalculator):
-        assert calculator.from_roman_smaller_4000_to_arabic("  MDXLIX  ") == 1549
-        assert calculator.from_roman_smaller_4000_to_arabic("\tVIII\n") == 8
-
-
-class TestRomanCalculatorIsValidRoman:
-    def test_raise_exception_when_you_try_to_modify_dictionaries(
-        self, calculator: RomanCalculator
-    ):
-        with pytest.raises(TypeError) as exc:
-            calculator._arabic_to_roman_map[123] = "123"  # type: ignore
-
-            calculator._from_arabic_smaller_4000_to_roman(123)
-            assert "'mappingproxy' object does not support item assignment" == exc.value
-
-
-class TestRomanCalculatorRoundTrip:
-    @pytest.mark.parametrize(
-        "non_used_input,expected_roman",
-        [
-            (1, "I"),
-            (2, "II"),
-            (3, "III"),
-            (4, "IV"),
-            (5, "V"),
-            (9, "IX"),
-            (10, "X"),
-            (27, "XXVII"),
-            (48, "XLVIII"),
-            (59, "LIX"),
-            (93, "XCIII"),
-            (141, "CXLI"),
-            (163, "CLXIII"),
-            (402, "CDII"),
-            (575, "DLXXV"),
-            (911, "CMXI"),
-            (1024, "MXXIV"),
-            (1234, "MCCXXXIV"),
-            (1549, "MDXLIX"),
-            (3000, "MMM"),
-            (3999, "MMMCMXCIX"),
-        ],
-    )
-    def test_roman_to_arabic_to_roman(
-        self, calculator: RomanCalculator, expected_roman: str, non_used_input: int
-    ) -> None:
-        number = calculator.from_roman_smaller_4000_to_arabic(expected_roman)
-        result = calculator._from_arabic_smaller_4000_to_roman(number)
-        assert result == expected_roman
-
-    @pytest.mark.parametrize(
-        "expected_arabic, non_used_roman",
-        [
-            (1, "I"),
-            (2, "II"),
-            (3, "III"),
-            (4, "IV"),
-            (5, "V"),
-            (9, "IX"),
-            (10, "X"),
-            (27, "XXVII"),
-            (48, "XLVIII"),
-            (59, "LIX"),
-            (93, "XCIII"),
-            (141, "CXLI"),
-            (163, "CLXIII"),
-            (402, "CDII"),
-            (575, "DLXXV"),
-            (911, "CMXI"),
-            (1024, "MXXIV"),
-            (1234, "MCCXXXIV"),
-            (1549, "MDXLIX"),
-            (3000, "MMM"),
-            (3999, "MMMCMXCIX"),
-        ],
-    )
-    def test_arabic_to_roman_to_arabic(
-        self, calculator: RomanCalculator, expected_arabic: int, non_used_roman: str
-    ) -> None:
-        roman = calculator._from_arabic_smaller_4000_to_roman(expected_arabic)
-        result = calculator.from_roman_smaller_4000_to_arabic(roman)
-        assert result == expected_arabic
 
 
 class TestRomanCalculatorLargeArabics:
@@ -363,6 +147,12 @@ class TestValidateRomanString:
         with pytest.raises(NumberOutOfRangeError, match="El número debe ser entero"):
             validator.validate_arabic_input(invalid_arabic_float)
 
+    def test_number_smaller_1(self, validator: RomanNumeralValidator) -> None:
+        with pytest.raises(
+            NumberOutOfRangeError, match="El número debe ser mayor a 0. Recibido"
+        ):
+            validator.validate_arabic_input(0)
+
     @pytest.mark.parametrize(
         "input_str,expected_output",
         [
@@ -382,23 +172,6 @@ class TestValidateRomanString:
     @pytest.mark.parametrize(
         "roman",
         [
-            "XLIX••CXXIII•CXXIII",
-            "LIV•CXXV",
-            "IV•IV",
-            "XVII•DCCCXCVIII",
-            "CCCXCII•CXLV",
-            "ix",
-            "MdCXvI",
-        ],
-    )
-    def test_valid_type_for_roman(
-        self, calculator: RomanCalculator, roman: str
-    ) -> None:
-        assert isinstance(calculator._validate_roman_string(roman), str)
-
-    @pytest.mark.parametrize(
-        "roman",
-        [
             1,
             1.1,
             True,
@@ -407,12 +180,12 @@ class TestValidateRomanString:
         ],
     )
     def test_invalid_type_for_roman(
-        self, calculator: RomanCalculator, roman: str
+        self, validator: RomanNumeralValidator, roman: str
     ) -> None:
         with pytest.raises(
             InvalidRomanNumeralError, match="El valor debe ser una cadena de texto"
         ):
-            calculator._validate_roman_string(roman)
+            validator.validate_roman_input(roman)
 
     @pytest.mark.parametrize(
         "invalid_input",
@@ -423,10 +196,199 @@ class TestValidateRomanString:
         ],
     )
     def test_invalid_empty_string(
-        self, calculator: RomanCalculator, invalid_input: str
+        self, validator: RomanNumeralValidator, invalid_input: str
     ) -> None:
-        with pytest.raises(
-            InvalidRomanNumeralError, match="Cadena romana vacía."
-        ) as excinfo:
-            calculator._validate_roman_string(invalid_input)
-            assert "Cadena romana vacía." == excinfo.value
+        with pytest.raises(InvalidRomanNumeralError, match="Cadena romana vacía."):
+            validator.validate_roman_input(invalid_input)
+
+
+class TestStandardRomanConverterToRoman:
+    @pytest.fixture
+    def converter(self):
+        return StandardRomanConverter(ARABIC_TO_ROMAN_MAP)
+
+    @pytest.fixture
+    def converter_to_arabic(self):
+        return StandardRomanConverter(ROMAN_TO_ARABIC_MAP)
+
+    @pytest.mark.parametrize(
+        "arabic,expected_roman",
+        [
+            (1, "I"),
+            (4, "IV"),
+            (9, "IX"),
+            (58, "LVIII"),
+            (3999, "MMMCMXCIX"),
+            (1000, "M"),
+            (1987, "MCMLXXXVII"),
+            (2023, "MMXXIII"),
+        ],
+    )
+    def test_valid_arabic_to_roman(
+        self,
+        converter: StandardRomanConverter,
+        arabic: int,
+        expected_roman: str,
+    ) -> None:
+        assert converter.to_roman(arabic) == expected_roman
+
+    @pytest.mark.parametrize(
+        "arabic",
+        [
+            0,
+            -1,
+            -100,
+            4000,
+            5000,
+            10000,
+            999999,
+        ],
+    )
+    def test_number_out_of_range(
+        self, converter: StandardRomanConverter, arabic: int
+    ) -> None:
+        with pytest.raises(NumberOutOfRangeError, match="Número fuera del rango"):
+            converter.to_roman(arabic)
+
+    def test_raise_exception_when_you_try_to_modify_dictionaries(
+        self, converter: StandardRomanConverter
+    ):
+        with pytest.raises(TypeError) as exc:
+            converter._arabic_to_roman[123] = "123"  # type: ignore
+
+            converter.to_roman(123)
+            assert "'mappingproxy' object does not support item assignment" == exc.value
+
+    @pytest.mark.parametrize(
+        "arabic_input,expected_non_used_roman",
+        [
+            (1, "I"),
+            (2, "II"),
+            (30, "XXX"),
+            (400, "CD"),
+            (3999, "MMMCMXCIX"),
+        ],
+    )
+    def test_from_roman_to_arabic_to_roman(
+        self,
+        converter: StandardRomanConverter,
+        arabic_input: int,
+        expected_non_used_roman: str,
+    ) -> None:
+        roman = converter.to_roman(arabic_input)
+        result = converter.to_arabic(roman)
+        assert result == arabic_input
+
+    @pytest.mark.parametrize(
+        "non_used_arabic,input_roman",
+        [
+            (1, "I"),
+            (2, "II"),
+            (30, "XXX"),
+            (400, "CD"),
+            (3999, "MMMCMXCIX"),
+        ],
+    )
+    def test_from_arabic_to_roman_to_arabic(
+        self,
+        converter: StandardRomanConverter,
+        non_used_arabic: int,
+        input_roman: str,
+    ) -> None:
+        arabic = converter.to_arabic(input_roman)
+        result = converter.to_roman(arabic)
+        assert result == input_roman
+
+
+class TestStandardRomanConverterToArabic:
+    @pytest.fixture
+    def converter(self) -> StandardRomanConverter:
+        return StandardRomanConverter(ARABIC_TO_ROMAN_MAP)
+
+    @pytest.mark.parametrize(
+        "roman_input,expected_arabic",
+        [
+            ("I", 1),
+            ("II", 2),
+            ("III", 3),
+            ("IV", 4),
+            ("V", 5),
+            ("IX", 9),
+            ("X", 10),
+            ("XXVII", 27),
+            ("XLVIII", 48),
+            ("LIX", 59),
+            ("XCIII", 93),
+            ("CXLI", 141),
+            ("CLXIII", 163),
+            ("CDII", 402),
+            ("DLXXV", 575),
+            ("CMXI", 911),
+            ("MXXIV", 1024),
+            ("MCCXXXIV", 1234),
+            ("MDXLIX", 1549),
+            ("MMM", 3000),
+            ("MMMCMXCIX", 3999),
+        ],
+    )
+    def test_valid_roman_to_arabic(
+        self,
+        converter: StandardRomanConverter,
+        roman_input: str,
+        expected_arabic: int,
+    ) -> None:
+        assert converter.to_arabic(roman_input) == expected_arabic
+
+    @pytest.mark.parametrize(
+        "invalid_roman",
+        [
+            "A",
+            "BXI",
+            "123",
+            "!@#",
+            "MMMMM",
+            "IL",
+            "xm",
+            "VX",
+            "IVIV",
+            "VV",
+            "DM",
+            "LC",
+            "XLXL",
+            "CMCM",
+            "",
+            "   ",
+            "\n\t",
+        ],
+    )
+    def test_invalid_roman_raises(
+        self, converter: StandardRomanConverter, invalid_roman: str
+    ) -> None:
+        with pytest.raises(InvalidRomanNumeralError):
+            converter.to_arabic(invalid_roman)
+
+    @pytest.mark.parametrize(
+        "insensitive_cases,expected_arabic",
+        [
+            ("mdcliv", 1654),
+            ("mDxLiX", 1549),
+            ("McMxvII", 1917),
+        ],
+    )
+    def test_case_insensitive(
+        self,
+        converter: StandardRomanConverter,
+        insensitive_cases: str,
+        expected_arabic: int,
+    ) -> None:
+        assert converter.to_arabic(insensitive_cases) == expected_arabic
+
+    def test_whitespace_handling(self, converter: StandardRomanConverter) -> None:
+        assert converter.to_arabic("  MDCLIV  ") == 1654
+        assert converter.to_arabic("\tVIII\n") == 8
+
+    def test_type_error(self, converter: StandardRomanConverter) -> None:
+        with pytest.raises(InvalidRomanNumeralError):
+            converter.to_arabic(123)  # type:ignore
+        with pytest.raises(InvalidRomanNumeralError):
+            converter.to_arabic([1, 2, 3])  # type:ignore

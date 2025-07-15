@@ -100,6 +100,51 @@ class RomanNumeralValidator:
         return roman
 
 
+class StandardRomanConverter(_IRomanCalculator):
+    MIN_ROMAN_VALUE = 1
+    MAX_STANDARD_ROMAN = 3999
+
+    def __init__(self, mapping: dict):
+        self._arabic_to_roman = MappingProxyType(mapping)
+        self._roman_to_arabic = MappingProxyType(ROMAN_TO_ARABIC_MAP)
+
+    def to_roman(self, number: int) -> str:
+        if not self.MIN_ROMAN_VALUE <= number <= self.MAX_STANDARD_ROMAN:
+            raise NumberOutOfRangeError(
+                f"Número fuera del rango ({self.MIN_ROMAN_VALUE}-{self.MAX_STANDARD_ROMAN}): {number}"
+            )
+
+        result = []
+
+        for value, numeral in self._arabic_to_roman.items():
+            count, number = divmod(number, value)
+            if count:
+                result.append(numeral * count)
+
+        return "".join(result)
+
+    def to_arabic(self, roman: str) -> int:
+        roman = RomanNumeralValidator.validate_roman_input(roman)
+
+        if not RomanNumeralValidator.is_valid_roman(roman):
+            raise InvalidRomanNumeralError(f"Número romano inválido: '{roman}'")
+
+        result = 0
+        previous = 0
+
+        for char in reversed(roman):
+            value = self._roman_to_arabic[char]
+
+            if value < previous:
+                result -= value
+
+            else:
+                result += value
+                previous = value
+
+        return result
+
+
 class RomanCalculator(IRomanCalculator):
     _ROMAN_REGEX = re.compile(
         "^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
@@ -291,9 +336,7 @@ if __name__ == "__main__":
     number = 3999999  # "MMMCMXCIX•CMXCIX
     number = 4004000
     number = 49123123  # XLIX••CXXIII•CXXIII
-    big_roman = calculator.from_arabic_to_roman(number)
+    big_roman = calculator.from_arabic_to_roman(1549)
     print("big roman", big_roman)
     roman = "DCII•••VI••CCXXII•"
     print(f"From big roman to arabic: {calculator.from_roman_to_arabic(big_roman)}")
-
-    print(RomanNumeralValidator().is_valid_roman("DCII•••VI••CCCCXXII•"))
