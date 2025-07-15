@@ -43,11 +43,11 @@ class NumberOutOfRangeError(RomanCalculatorError):
 
 class IRomanCalculator(ABC):
     @abstractmethod
-    def from_arabic_smaller_4000_to_roman(self, number: int) -> str:
+    def from_arabic_to_roman(self, number: int) -> str:
         pass
 
     @abstractmethod
-    def from_roman_smaller_4000_to_arabic(self, roman: str) -> int:
+    def from_roman_to_arabic(self, roman: str) -> int:
         pass
 
 
