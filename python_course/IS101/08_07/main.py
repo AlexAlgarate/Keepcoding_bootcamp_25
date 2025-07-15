@@ -29,6 +29,18 @@ ROMAN_TO_ARABIC_MAP: dict[str, int] = {
 }
 
 
+class RomanCalculatorError(Exception):
+    pass
+
+
+class InvalidRomanNumeralError(RomanCalculatorError):
+    pass
+
+
+class NumberOutOfRangeError(RomanCalculatorError):
+    pass
+
+
 class IRomanCalculator(ABC):
     @abstractmethod
     def from_arabic_smaller_4000_to_roman(self, number: int) -> str:
@@ -126,7 +138,7 @@ class RomanCalculator(IRomanCalculator):
             result += partial_roman + level_sufix
         return result
 
-    def to_roman_tuples(self, roman: str) -> list[tuple[str, int]]:
+    def _to_roman_tuples(self, roman: str) -> list[tuple[str, int]]:
         groups = roman.split(self.THOUSAND_INDICATOR)
 
         result = []
@@ -146,7 +158,7 @@ class RomanCalculator(IRomanCalculator):
         return result
 
     def from_roman_to_arabic(self, roman: str) -> int:
-        groups = self.to_roman_tuples(roman)
+        groups = self._to_roman_tuples(roman)
 
         result = 0
 
@@ -171,7 +183,7 @@ if __name__ == "__main__":
     number = 3999999  # "MMMCMXCIX•CMXCIX
     number = 4004000
     number = 49123123  # XLIX••CXXIII•CXXIII
-    big_roman = calculator.from_arabic_to_roman(avogradro_number)
+    big_roman = calculator.from_arabic_to_roman(number)
     print("big roman", big_roman)
     roman = "DCII•••VI••CCXXII•"
     print(f"From big roman to arabic: {calculator.from_roman_to_arabic(big_roman)}")
