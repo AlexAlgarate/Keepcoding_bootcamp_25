@@ -56,6 +56,8 @@ class RomanCalculator(IRomanCalculator):
         "^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
     )
     THOUSAND_INDICATOR = "•"
+    MIN_ROMAN_VALUE = 1
+    MAX_STANDARD_ROMAN = 3999
 
     def __init__(self) -> None:
         self._arabic_to_roman_map = MappingProxyType(ARABIC_TO_ROMAN_MAP)
@@ -65,11 +67,32 @@ class RomanCalculator(IRomanCalculator):
     def is_valid_roman(roman: str) -> bool:
         return bool(RomanCalculator._ROMAN_REGEX.fullmatch(roman.upper()))
 
-    def from_arabic_smaller_4000_to_roman(self, number: int) -> str:
-        if not 1 <= number <= 3999:
-            raise ValueError(
-                f"El número tiene que estar entre 1 y 3999. El recibido es {number}"
+    @staticmethod
+    def _validate_arabic_range(number: int, min: int, max: int) -> None:
+        if not isinstance(number, int):
+            raise NumberOutOfRangeError("El número debe ser un entero")
+
+        if not min <= number <= max:
+            raise NumberOutOfRangeError(
+                f"El número tiene que estar entre {min} y {max}. El recibido es {number}"
             )
+
+    @staticmethod
+    def _validate_roman_string(roman: str) -> str:
+        if not isinstance(roman, str):
+            raise InvalidRomanNumeralError("El valor debe ser una cadena de texto")
+
+        roman = roman.upper().strip()
+
+        if not roman:
+            raise InvalidRomanNumeralError("Cadena romana vacía.")
+
+        return roman
+
+    def from_arabic_smaller_4000_to_roman(self, number: int) -> str:
+        self._validate_arabic_range(
+            number, self.MIN_ROMAN_VALUE, self.MAX_STANDARD_ROMAN
+        )
 
         result = []
 
@@ -82,13 +105,10 @@ class RomanCalculator(IRomanCalculator):
         return "".join(result)
 
     def from_roman_smaller_4000_to_arabic(self, roman: str) -> int:
-        roman = roman.upper().strip()
-
-        if not roman:
-            raise ValueError("Cadena romana vacía.")
+        roman = self._validate_roman_string(roman)
 
         if not self.is_valid_roman(roman):
-            raise ValueError(f"Número romano no válido: '{roman}'")
+            raise InvalidRomanNumeralError(f"Número romano no válido: '{roman}'")
 
         result = 0
         previous = 0
@@ -106,6 +126,9 @@ class RomanCalculator(IRomanCalculator):
 
     @staticmethod
     def _split_into_thousands(number: int) -> list[int]:
+        if number == 0:
+            return [0]
+
         parts: list = []
 
         while number > 0:
