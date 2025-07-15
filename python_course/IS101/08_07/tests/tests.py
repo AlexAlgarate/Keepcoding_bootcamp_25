@@ -153,7 +153,7 @@ class TestRomanCalculatorRomantoArabic:
         assert calculator.from_roman_smaller_4000_to_arabic("\tVIII\n") == 8
 
 
-class TestRomanCalculatorValidation:
+class TestRomanCalculatorIsValidRoman:
     @pytest.mark.parametrize(
         "valid_roman",
         ["III", "III", "IV", "V", "IX", "X", "XXVII", "XLVIII", "LIX", "XCIII"],
