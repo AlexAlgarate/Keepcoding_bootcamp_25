@@ -51,6 +51,55 @@ class IRomanCalculator(ABC):
         pass
 
 
+class _IRomanCalculator(ABC):
+    @abstractmethod
+    def to_roman(self, number: int) -> str:
+        pass
+
+    @abstractmethod
+    def to_arabic(self, roman: str) -> int:
+        pass
+
+
+class RomanNumeralValidator:
+    _ROMAN_REGEX = re.compile(
+        "^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
+    )
+
+    @classmethod
+    def is_valid_roman(cls, roman: str) -> bool:
+        return bool(cls._ROMAN_REGEX.fullmatch(roman.upper()))
+
+    @classmethod
+    def validate_arabic_input(cls, number: int | float) -> int:
+        if not isinstance(number, (int, float)):
+            raise NumberOutOfRangeError("El número debe ser numérico")
+
+        if isinstance(number, float):
+            if not number.is_integer():
+                raise NumberOutOfRangeError("El número debe ser entero")
+            number = int(number)
+
+        if number < 1:
+            raise NumberOutOfRangeError(
+                f"El número debe ser mayor a 0. Recibido: {number}"
+            )
+
+        return number
+
+    @classmethod
+    def validate_roman_input(cls, roman: str) -> str:
+        if not isinstance(roman, str):
+            raise InvalidRomanNumeralError("El valor debe ser una cadena de texto")
+
+        roman = roman.upper().strip()
+
+        if not roman:
+            raise InvalidRomanNumeralError("Cadena romana vacía.")
+
+        return roman
+
+
 class RomanCalculator(IRomanCalculator):
     _ROMAN_REGEX = re.compile(
         "^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"
@@ -246,3 +295,5 @@ if __name__ == "__main__":
     print("big roman", big_roman)
     roman = "DCII•••VI••CCXXII•"
     print(f"From big roman to arabic: {calculator.from_roman_to_arabic(big_roman)}")
+
+    print(RomanNumeralValidator().is_valid_roman("DCII•••VI••CCCCXXII•"))

@@ -4,6 +4,7 @@ from main import (
     InvalidRomanNumeralError,
     NumberOutOfRangeError,
     RomanCalculator,
+    RomanNumeralValidator,
     create_roman_calculator,
 )
 
@@ -154,21 +155,6 @@ class TestRomanCalculatorRomantoArabic:
 
 
 class TestRomanCalculatorIsValidRoman:
-    @pytest.mark.parametrize(
-        "valid_roman",
-        ["III", "III", "IV", "V", "IX", "X", "XXVII", "XLVIII", "LIX", "XCIII"],
-    )
-    def test_valid_roman_patterns(
-        self, calculator: RomanCalculator, valid_roman: str
-    ) -> None:
-        assert calculator.is_valid_roman(valid_roman)
-
-    @pytest.mark.parametrize(
-        "invalid_roman", ["IIII", "VV", "LL", "DD", "IC", "IM", "XM", "MMMM"]
-    )
-    def test_invalid_roman_patterns(self, invalid_roman):
-        assert RomanCalculator.is_valid_roman(invalid_roman) is False
-
     def test_raise_exception_when_you_try_to_modify_dictionaries(
         self, calculator: RomanCalculator
     ):
@@ -290,43 +276,93 @@ class TestRomanCalculatorLargeRomans:
         assert calculator.from_roman_to_arabic(input_roman) == expected_number
 
 
-class TestValidateArabicRange:
-    @pytest.mark.parametrize(
-        "number,min_val,max_val",
-        [
-            (1, 1, 3999),
-            (3999, 1, 3999),
-            (1000, 1, 3999),
-            (50, 1, 100),
-            (100, 100, 100),
-        ],
-    )
-    def test_valid_range_does_not_raise(
-        self, calculator: RomanCalculator, number: int, min_val: int, max_val: int
-    ) -> None:
-        calculator._validate_arabic_range(number, min_val, max_val)
-
-    @pytest.mark.parametrize(
-        "number,min_val,max_val",
-        [
-            (0, 1, 3999),
-            (-1, 1, 3999),
-            (4000, 1, 3999),
-            (101, 1, 100),
-            (99, 100, 100),
-        ],
-    )
-    def test_invalid_range_raises(
-        self, calculator: RomanCalculator, number: int, min_val: int, max_val: int
-    ) -> None:
-        with pytest.raises(NumberOutOfRangeError) as excinfo:
-            calculator._validate_arabic_range(number, min_val, max_val)
-        assert f"El número tiene que estar entre {min_val} y {max_val}" in str(
-            excinfo.value
-        )
+@pytest.fixture
+def validator() -> RomanNumeralValidator:
+    return RomanNumeralValidator()
 
 
 class TestValidateRomanString:
+    @pytest.mark.parametrize(
+        "valid_roman",
+        ["III", "III", "IV", "V", "IX", "X", "XXVII", "XLVIII", "LIX", "XCIII"],
+    )
+    def test_valid_roman_patterns(
+        self, validator: RomanNumeralValidator, valid_roman: str
+    ) -> None:
+        assert validator.is_valid_roman(valid_roman)
+
+    @pytest.mark.parametrize(
+        "invalid_roman", ["IIII", "VV", "LL", "DD", "IC", "IM", "XM", "MMMM"]
+    )
+    def test_invalid_roman_patterns(
+        self, validator: RomanNumeralValidator, invalid_roman
+    ) -> None:
+        assert validator.is_valid_roman(invalid_roman) is False
+
+    @pytest.mark.parametrize(
+        "valid_arabic_input, valid_arabic_expected",
+        [
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (5000, 5000),
+            (123456789, 123456789),
+            (int(6.022e23), int(6.022e23)),
+            (5.0, 5.0),
+            (3999.0, 3999.0),
+        ],
+    )
+    def test_valid_arabic_input(
+        self,
+        validator: RomanNumeralValidator,
+        valid_arabic_input: int,
+        valid_arabic_expected: int,
+    ) -> None:
+        assert (
+            validator.validate_arabic_input(valid_arabic_input) == valid_arabic_expected
+        )
+
+    @pytest.mark.parametrize(
+        "invalid_arabic_input",
+        [
+            "1",
+            "1000.0",
+            [1, 2, 3],
+            {1: 1.5},
+        ],
+    )
+    def test_invalid_arabic_inputs(
+        self, validator: RomanNumeralValidator, invalid_arabic_input: int
+    ) -> None:
+        with pytest.raises(NumberOutOfRangeError, match="El número debe ser numérico"):
+            validator.validate_arabic_input(invalid_arabic_input)
+
+    @pytest.mark.parametrize(
+        "valid_arabic_float,expected_number",
+        [
+            (1.0, 1),
+            (10000.0, 10000),
+            (123456789.0, 123456789),
+        ],
+    )
+    def test_number_is_a_valid_float(
+        self,
+        validator: RomanNumeralValidator,
+        valid_arabic_float: int,
+        expected_number: int,
+    ) -> None:
+        assert validator.validate_arabic_input(valid_arabic_float) == expected_number
+
+    @pytest.mark.parametrize(
+        "invalid_arabic_float",
+        [1.5, 10000.1, 1234.56789],
+    )
+    def test_number_is_not_valid_float(
+        self, validator: RomanNumeralValidator, invalid_arabic_float: int
+    ) -> None:
+        with pytest.raises(NumberOutOfRangeError, match="El número debe ser entero"):
+            validator.validate_arabic_input(invalid_arabic_float)
+
     @pytest.mark.parametrize(
         "input_str,expected_output",
         [
@@ -338,8 +374,10 @@ class TestValidateRomanString:
             (" MMMCMXCIX ", "MMMCMXCIX"),
         ],
     )
-    def test_valid_strings(self, calculator, input_str, expected_output):
-        assert calculator._validate_roman_string(input_str) == expected_output
+    def test_valid_strings(
+        self, validator: RomanNumeralValidator, input_str: str, expected_output: str
+    ) -> None:
+        assert validator.validate_roman_input(input_str) == expected_output
 
     @pytest.mark.parametrize(
         "roman",
