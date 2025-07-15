@@ -102,7 +102,7 @@ class RomanCalculator(IRomanCalculator):
 
         return parts
 
-    def from_big_arabic_to_roman(self, number: int) -> str:
+    def from_arabic_to_roman(self, number: int) -> str:
         if number < 1:
             raise ValueError(
                 f"El número tiene que ser mayor de 1. El recibido es -- {number} --"
@@ -145,7 +145,7 @@ class RomanCalculator(IRomanCalculator):
 
         return result
 
-    def from_big_roman_to_arabic(self, roman: str) -> int:
+    def from_roman_to_arabic(self, roman: str) -> int:
         groups = self.to_roman_tuples(roman)
 
         result = 0
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     number = 3999999  # "MMMCMXCIX•CMXCIX
     number = 4004000
     number = 49123123  # XLIX••CXXIII•CXXIII
-    big_roman = calculator.from_big_arabic_to_roman(avogradro_number)
+    big_roman = calculator.from_arabic_to_roman(avogradro_number)
     print("big roman", big_roman)
     roman = "DCII•••VI••CCXXII•"
-    print(f"From big roman to arabic: {calculator.from_big_roman_to_arabic(big_roman)}")
+    print(f"From big roman to arabic: {calculator.from_roman_to_arabic(big_roman)}")

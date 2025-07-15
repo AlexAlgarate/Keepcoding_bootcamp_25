@@ -260,7 +260,7 @@ class TestRomanCalculatorLargeArabics:
     def test_valid_large_numbers(
         self, calculator: RomanCalculator, input_arabic: int, expected_roman: str
     ) -> None:
-        assert calculator.from_big_arabic_to_roman(input_arabic) == expected_roman
+        assert calculator.from_arabic_to_roman(input_arabic) == expected_roman
 
 
 class TestRomanCalculatorLargeRomans:
@@ -281,4 +281,4 @@ class TestRomanCalculatorLargeRomans:
     def test_valid_large_romans(
         self, calculator: RomanCalculator, input_roman: str, expected_number: int
     ) -> None:
-        assert calculator.from_big_roman_to_arabic(input_roman) == expected_number
+        assert calculator.from_roman_to_arabic(input_roman) == expected_number
