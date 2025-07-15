@@ -290,6 +290,105 @@ class TestRomanCalculatorLargeRomans:
         assert calculator.from_roman_to_arabic(input_roman) == expected_number
 
 
-# class TestValidArabicRange:
-#     def test_valid_arabic_range(self, number: int, min: int, max: int) -> None:
-#         pass
+class TestValidateArabicRange:
+    @pytest.mark.parametrize(
+        "number,min_val,max_val",
+        [
+            (1, 1, 3999),
+            (3999, 1, 3999),
+            (1000, 1, 3999),
+            (50, 1, 100),
+            (100, 100, 100),
+        ],
+    )
+    def test_valid_range_does_not_raise(
+        self, calculator: RomanCalculator, number: int, min_val: int, max_val: int
+    ) -> None:
+        calculator._validate_arabic_range(number, min_val, max_val)
+
+    @pytest.mark.parametrize(
+        "number,min_val,max_val",
+        [
+            (0, 1, 3999),
+            (-1, 1, 3999),
+            (4000, 1, 3999),
+            (101, 1, 100),
+            (99, 100, 100),
+        ],
+    )
+    def test_invalid_range_raises(
+        self, calculator: RomanCalculator, number: int, min_val: int, max_val: int
+    ) -> None:
+        with pytest.raises(NumberOutOfRangeError) as excinfo:
+            calculator._validate_arabic_range(number, min_val, max_val)
+        assert f"El número tiene que estar entre {min_val} y {max_val}" in str(
+            excinfo.value
+        )
+
+
+class TestValidateRomanString:
+    @pytest.mark.parametrize(
+        "input_str,expected_output",
+        [
+            ("XVI", "XVI"),
+            ("xvi", "XVI"),
+            ("  xvi  ", "XVI"),
+            ("\tXVI\n", "XVI"),
+            ("mcmxcix", "MCMXCIX"),
+            (" MMMCMXCIX ", "MMMCMXCIX"),
+        ],
+    )
+    def test_valid_strings(self, calculator, input_str, expected_output):
+        assert calculator._validate_roman_string(input_str) == expected_output
+
+    @pytest.mark.parametrize(
+        "roman",
+        [
+            "XLIX••CXXIII•CXXIII",
+            "LIV•CXXV",
+            "IV•IV",
+            "XVII•DCCCXCVIII",
+            "CCCXCII•CXLV",
+            "ix",
+            "MdCXvI",
+        ],
+    )
+    def test_valid_type_for_roman(
+        self, calculator: RomanCalculator, roman: str
+    ) -> None:
+        assert isinstance(calculator._validate_roman_string(roman), str)
+
+    @pytest.mark.parametrize(
+        "roman",
+        [
+            1,
+            1.1,
+            True,
+            [1, 2, 3],
+            {"roman_value": [1, 2, 3, 4.5]},
+        ],
+    )
+    def test_invalid_type_for_roman(
+        self, calculator: RomanCalculator, roman: str
+    ) -> None:
+        with pytest.raises(
+            InvalidRomanNumeralError, match="El valor debe ser una cadena de texto"
+        ):
+            calculator._validate_roman_string(roman)
+
+    @pytest.mark.parametrize(
+        "invalid_input",
+        [
+            "",
+            "   ",
+            "\n\t",
+        ],
+    )
+    def test_invalid_empty_string(
+        self, calculator: RomanCalculator, invalid_input: str
+    ) -> None:
+        with pytest.raises(
+            InvalidRomanNumeralError, match="Cadena romana vacía."
+        ) as excinfo:
+            calculator._validate_roman_string(invalid_input)
+            assert "Cadena romana vacía." == excinfo.value
