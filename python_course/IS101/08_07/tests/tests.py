@@ -314,7 +314,10 @@ class TestRomanCalculatorLargeArabics:
     @pytest.mark.parametrize(
         "input_arabic, expected_roman",
         [
-            (int(6.022e23), "DCII•••••••CC••••••XXVII••CCLXII•CMLXXVI"),
+            (
+                int(6.022 * 10**23),
+                "DCII•••••••CXCIX••••••CMXCIX•••••CMXCIX••••CMXCIX•••CMLX••CLIV•CXII",
+            ),
             (49123123, "XLIX••CXXIII•CXXIII"),
             (54125, "LIV•CXXV"),
             (4004, "IV•IV"),
@@ -333,7 +336,10 @@ class TestRomanCalculatorLargeRomans:
     @pytest.mark.parametrize(
         "input_roman,expected_number",
         [
-            ("DCII•••••••CC••••••XXVII••CCLXII•CMLXXVI", int(6.022e23)),
+            (
+                "DCII•••••••CXCIX••••••CMXCIX•••••CMXCIX••••CMXCIX•••CMLX••CLIV•CXII",
+                int(6.022 * 10**23),
+            ),
             ("XLIX••CXXIII•CXXIII", 49123123),
             ("LIV•CXXV", 54125),
             ("IV•IV", 4004),

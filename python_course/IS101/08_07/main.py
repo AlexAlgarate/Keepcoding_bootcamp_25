@@ -211,12 +211,12 @@ if __name__ == "__main__":
     calculator = create_roman_calculator()
 
     number_under_4000 = 3999  # MMMCMXCIX
-    avogradro_number = int(6.022e23)  # DCII•••••••CC••••••XXVII••CCLXII•CMLXXVI
+    avogradro_number = int(6.022 * 10**23)  # DCII•••••••CC••••••XXVII••CCLXII•CMLXXVI
 
     number = 3999999  # "MMMCMXCIX•CMXCIX
     number = 4004000
     number = 49123123  # XLIX••CXXIII•CXXIII
-    big_roman = calculator.from_big_arabic_to_roman(number)
+    big_roman = calculator.from_big_arabic_to_roman(avogradro_number)
     print("big roman", big_roman)
     roman = "DCII•••VI••CCXXII•"
     print(f"From big roman to arabic: {calculator.from_big_roman_to_arabic(big_roman)}")
