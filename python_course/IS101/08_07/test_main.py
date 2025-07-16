@@ -1,11 +1,11 @@
 import pytest
 
-from src import roman_exceptions as exc
 from src.extended_converter import (
     RomanCalculator,
-    RomanNumeralValidator,
     create_roman_calculator,
 )
+from src.utils import roman_exceptions as exc
+from src.utils.roman_validator import RomanNumeralValidator
 
 
 @pytest.fixture

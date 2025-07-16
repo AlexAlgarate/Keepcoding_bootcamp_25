@@ -2,9 +2,8 @@ from types import MappingProxyType
 
 from src.constants.constants import ROMAN_TO_ARABIC_MAP
 from src.constants.constants import MinMaxValues as values
-
-from . import roman_exceptions as exc
-from .roman_validator import RomanNumeralValidator
+from src.utils import roman_exceptions as exc
+from src.utils.roman_validator import RomanNumeralValidator
 
 
 class StandardRomanConverter:

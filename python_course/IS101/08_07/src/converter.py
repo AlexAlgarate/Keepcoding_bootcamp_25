@@ -1,8 +1,7 @@
-from src.constants.constants import ARABIC_TO_ROMAN_MAP, ROMAN_TO_ARABIC_MAP
-from src.constants.constants import MinMaxValues as values
-from src.utils import roman_exceptions as exc
-from src.utils.roman_validator import RomanNumeralValidator
-
+from .constants import ARABIC_TO_ROMAN_MAP, ROMAN_TO_ARABIC_MAP
+from .constants import MinMaxValues as values
+from .constants.utils import roman_exceptions as exc
+from .constants.utils.roman_validator import RomanNumeralValidator
 from .roman_number_interface import IRomanCalculator
 from .standard_converter import (
     StandardRomanConverter,
