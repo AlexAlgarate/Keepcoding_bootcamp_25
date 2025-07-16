@@ -1,7 +1,6 @@
-from src.constants.constants import ARABIC_TO_ROMAN_MAP, ROMAN_TO_ARABIC_MAP
+from src.constants.constants import ROMAN_TO_ARABIC_MAP
 from src.constants.constants import MinMaxValues as values
-from src.utils import roman_exceptions as exc
-from src.utils.roman_validator import RomanNumeralValidator
+from src.converters.utils import roman_exceptions as exc
 
 from .converter_interface import IRomanCalculator
 from .standard_converter import StandardRomanConverter
@@ -107,21 +106,3 @@ class ExtendedRomanProcessor(IRomanCalculator):
                 raise exc.InvalidRomanNumeralError(f"Error en conversión: {e}")
 
         return result
-
-
-class RomanCalculator(IRomanCalculator):
-    def __init__(self) -> None:
-        self._standard_converter = StandardRomanConverter(ARABIC_TO_ROMAN_MAP)
-        self._extended_converter = ExtendedRomanProcessor(self._standard_converter)
-
-    def to_roman(self, number: int) -> str:
-        validate_number = RomanNumeralValidator.validate_arabic_input(number)
-        return self._extended_converter.to_roman(validate_number)
-
-    def to_arabic(self, roman: str) -> int:
-        validate_roman = RomanNumeralValidator.validate_roman_input(roman)
-        return self._extended_converter.to_arabic(validate_roman)
-
-
-def create_roman_calculator() -> RomanCalculator:
-    return RomanCalculator()
