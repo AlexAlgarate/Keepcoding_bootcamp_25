@@ -1,6 +1,6 @@
 import pytest
 
-from src.extended_converter import (
+from src.converters.extended_converter import (
     RomanCalculator,
     create_roman_calculator,
 )
