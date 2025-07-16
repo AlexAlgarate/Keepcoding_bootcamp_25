@@ -1,47 +1,25 @@
 from types import MappingProxyType
 
+from src.constants import ROMAN_TO_ARABIC_MAP
+
 from . import roman_exceptions as exc
+from .constants import MinMaxValues as values
 from .roman_validator import RomanNumeralValidator
-
-ARABIC_TO_ROMAN_MAP: dict[int, str] = {
-    1000: "M",
-    900: "CM",
-    500: "D",
-    400: "CD",
-    100: "C",
-    90: "XC",
-    50: "L",
-    40: "XL",
-    10: "X",
-    9: "IX",
-    5: "V",
-    4: "IV",
-    1: "I",
-}
-
-ROMAN_TO_ARABIC_MAP: dict[str, int] = {
-    "I": 1,
-    "V": 5,
-    "X": 10,
-    "L": 50,
-    "C": 100,
-    "D": 500,
-    "M": 1000,
-}
 
 
 class StandardRomanConverter:
-    MIN_ROMAN_VALUE = 1
-    MAX_STANDARD_ROMAN = 3999
-
     def __init__(self, mapping: dict):
         self._arabic_to_roman = MappingProxyType(mapping)
         self._roman_to_arabic = MappingProxyType(ROMAN_TO_ARABIC_MAP)
 
     def to_roman(self, number: int) -> str:
-        if not self.MIN_ROMAN_VALUE <= number <= self.MAX_STANDARD_ROMAN:
+        if (
+            not values.MIN_ROMAN_VALUE.value
+            <= number
+            <= values.MAX_STANDARD_ROMAN.value
+        ):
             raise exc.NumberOutOfRangeError(
-                f"Número fuera del rango ({self.MIN_ROMAN_VALUE}-{self.MAX_STANDARD_ROMAN}): {number}"
+                f"Número fuera del rango ({values.MIN_ROMAN_VALUE.value}-{values.MAX_STANDARD_ROMAN.value}): {number}"
             )
         result = []
         for value, numeral in self._arabic_to_roman.items():

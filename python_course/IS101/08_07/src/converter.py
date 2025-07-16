@@ -1,9 +1,9 @@
 from . import roman_exceptions as exc
+from .constants import ARABIC_TO_ROMAN_MAP, ROMAN_TO_ARABIC_MAP
+from .constants import MinMaxValues as values
 from .roman_number_interface import IRomanCalculator
 from .roman_validator import RomanNumeralValidator
 from .standard_converter import (
-    ARABIC_TO_ROMAN_MAP,
-    ROMAN_TO_ARABIC_MAP,
     StandardRomanConverter,
 )
 
@@ -70,7 +70,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
             raise exc.InvalidRomanNumeralError("Cadena romana vacía.")
 
     def to_roman(self, number: int) -> str:
-        if number <= StandardRomanConverter.MAX_STANDARD_ROMAN:
+        if number <= values.MAX_STANDARD_ROMAN.value:
             return self._standard_converter.to_roman(number)
 
         groups = self.split_into_thousands(number)
