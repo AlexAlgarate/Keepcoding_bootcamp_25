@@ -13,7 +13,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
     def __init__(self, standard_converter: StandardRomanConverter):
         self._standard_converter = standard_converter
 
-    def split_into_thousands(self, number: int) -> list[int]:
+    def _split_into_thousands(self, number: int) -> list[int]:
         if number == 0:
             return [0]
 
@@ -29,7 +29,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
 
         return [num for num in reversed(result)]
 
-    def parse_roman_groups(self, roman: str) -> list[tuple[str, int]]:
+    def _parse_roman_groups(self, roman: str) -> list[tuple[str, int]]:
         if self.THOUSAND_INDICATOR not in roman:
             return [(roman, 0)]
 
@@ -53,7 +53,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
 
         return result
 
-    def validate_extended_roman(self, roman: str) -> None:
+    def _validate_extended_roman(self, roman: str) -> None:
         special_chars = set((" ", "\t", "\n"))
         allowed_chars = (
             set(ROMAN_TO_ARABIC_MAP.keys()) | {self.THOUSAND_INDICATOR} | special_chars
@@ -72,7 +72,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
         if number <= values.MAX_STANDARD_ROMAN.value:
             return self._standard_converter.to_roman(number)
 
-        groups = self.split_into_thousands(number)
+        groups = self._split_into_thousands(number)
         levels = len(groups)
         result = ""
 
@@ -87,10 +87,10 @@ class ExtendedRomanProcessor(IRomanCalculator):
         return result
 
     def to_arabic(self, roman: str) -> int:
-        self.validate_extended_roman(roman)
+        self._validate_extended_roman(roman)
 
         try:
-            groups = self.parse_roman_groups(roman)
+            groups = self._parse_roman_groups(roman)
         except Exception as e:
             raise exc.InvalidRomanNumeralError(f"Error al procesar número romano: {e}")
 
