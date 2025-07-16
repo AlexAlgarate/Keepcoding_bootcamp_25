@@ -1,4 +1,4 @@
-from src.converters.extended_converter import create_roman_calculator
+from src.converters.roman_calculator import create_roman_calculator
 
 if __name__ == "__main__":
     calculator = create_roman_calculator()
