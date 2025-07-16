@@ -1,7 +1,7 @@
 from types import MappingProxyType
 
 from . import roman_exceptions as exc
-from .validators.roman_validator import RomanNumeralValidator
+from .roman_validator import RomanNumeralValidator
 
 ARABIC_TO_ROMAN_MAP: dict[int, str] = {
     1000: "M",
