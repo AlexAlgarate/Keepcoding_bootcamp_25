@@ -16,56 +16,59 @@ class ExtendedRomanProcessor(IRomanCalculator):
         if number == 0:
             return [0]
 
-        result = []
+        groups = []
         while number > 0:
             resto = number % 1000
-            result.append(resto)
+            groups.append(resto)
             number //= 1000
 
-        if result[-1] < 4 and len(result) > 1:
-            result[-2] = result[-1] * 1000 + result[-2]
-            result.pop()
+        # Combina el grupo más significativo si es menor que 4 y hay más de un grupo
+        if groups[-1] < 4 and len(groups) > 1:
+            groups[-2] += groups[-1] * 1000
+            groups.pop()
 
-        return [num for num in reversed(result)]
+        return list(reversed(groups))
 
     def _parse_roman_groups(self, roman: str) -> list[tuple[str, int]]:
         if self.THOUSAND_INDICATOR not in roman:
             return [(roman, 0)]
 
         groups = roman.split(self.THOUSAND_INDICATOR)
-        result = []
+        parsed = []
 
         for group in groups:
             if group:
-                result.append((group, 1))
+                parsed.append((group, 1))
+
             else:
-                if not result:
+                if not parsed:
                     raise exc.InvalidRomanNumeralError(
                         "Formato de número romano extendido inválido"
                     )
-                last_group, count = result.pop()
-                result.append((last_group, count + 1))
+                last_group, count = parsed.pop()
+                parsed.append((last_group, count + 1))
 
-        if result:
-            last_group, count = result.pop()
-            result.append((last_group, count - 1))
+        # El último grupo tiene un punto extra que hay que eliminar
+        if parsed:
+            last_group, count = parsed.pop()
+            parsed.append((last_group, count - 1))
 
-        return result
+        return parsed
 
     def _validate_extended_roman(self, roman: str) -> None:
-        special_chars = set((" ", "\t", "\n"))
-        allowed_chars = (
-            set(ROMAN_TO_ARABIC_MAP.keys()) | {self.THOUSAND_INDICATOR} | special_chars
-        )
-
-        invalid_chars = set(roman) - allowed_chars
-        if invalid_chars:
-            raise exc.InvalidRomanNumeralError(f"Caracteres inválidos: {invalid_chars}")
-
         roman = roman.upper().strip()
 
         if not roman:
             raise exc.InvalidRomanNumeralError("Cadena romana vacía.")
+
+        special_chars = set((" ", "\t", "\n"))
+        allowed_chars = (
+            set(ROMAN_TO_ARABIC_MAP) | {self.THOUSAND_INDICATOR} | special_chars
+        )
+        invalid_chars = set(roman) - allowed_chars
+
+        if invalid_chars:
+            raise exc.InvalidRomanNumeralError(f"Caracteres inválidos: {invalid_chars}")
 
     def to_roman(self, number: int) -> str:
         if number <= values.MAX_STANDARD_ROMAN.value:
