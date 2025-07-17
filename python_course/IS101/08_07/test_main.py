@@ -1,7 +1,7 @@
 import pytest
 
-from src.converters.roman_calculator import (
-    RomanCalculator,
+from src.converters.roman_converter import (
+    RomanConverter,
     create_roman_calculator,
 )
 from src.converters.utils import roman_exceptions as exc
@@ -9,7 +9,7 @@ from src.converters.utils.roman_validator import RomanNumeralValidator
 
 
 @pytest.fixture
-def calculator() -> RomanCalculator:
+def calculator() -> RomanConverter:
     calculator = create_roman_calculator()
     return calculator
 
@@ -176,7 +176,7 @@ class TestStandardRomanConverterToRoman:
     )
     def test_valid_arabic_to_roman(
         self,
-        calculator: RomanCalculator,
+        calculator: RomanConverter,
         arabic: int,
         expected_roman: str,
     ) -> None:
@@ -194,14 +194,12 @@ class TestStandardRomanConverterToRoman:
             999999,
         ],
     )
-    def test_number_out_of_range(
-        self, calculator: RomanCalculator, arabic: int
-    ) -> None:
+    def test_number_out_of_range(self, calculator: RomanConverter, arabic: int) -> None:
         with pytest.raises(exc.NumberOutOfRangeError, match="Número fuera del rango"):
             calculator._standard_converter.to_roman(arabic)
 
     def test_raise_exception_when_you_try_to_modify_dictionaries(
-        self, calculator: RomanCalculator
+        self, calculator: RomanConverter
     ):
         with pytest.raises(TypeError) as exc:
             calculator._standard_converter._arabic_to_roman[123] = "123"  # type: ignore
@@ -221,7 +219,7 @@ class TestStandardRomanConverterToRoman:
     )
     def test_from_roman_to_arabic_to_roman(
         self,
-        calculator: RomanCalculator,
+        calculator: RomanConverter,
         arabic_input: int,
         expected_non_used_roman: str,
     ) -> None:
@@ -241,7 +239,7 @@ class TestStandardRomanConverterToRoman:
     )
     def test_from_arabic_to_roman_to_arabic(
         self,
-        calculator: RomanCalculator,
+        calculator: RomanConverter,
         non_used_arabic: int,
         input_roman: str,
     ) -> None:
@@ -279,7 +277,7 @@ class TestStandardRomanConverterToArabic:
     )
     def test_valid_roman_to_arabic(
         self,
-        calculator: RomanCalculator,
+        calculator: RomanConverter,
         roman_input: str,
         expected_arabic: int,
     ) -> None:
@@ -308,7 +306,7 @@ class TestStandardRomanConverterToArabic:
         ],
     )
     def test_invalid_roman_raises(
-        self, calculator: RomanCalculator, invalid_roman: str
+        self, calculator: RomanConverter, invalid_roman: str
     ) -> None:
         with pytest.raises(exc.InvalidRomanNumeralError):
             calculator._standard_converter.to_arabic(invalid_roman)
@@ -323,7 +321,7 @@ class TestStandardRomanConverterToArabic:
     )
     def test_case_insensitive(
         self,
-        calculator: RomanCalculator,
+        calculator: RomanConverter,
         insensitive_cases: str,
         expected_arabic: int,
     ) -> None:
@@ -332,11 +330,11 @@ class TestStandardRomanConverterToArabic:
             == expected_arabic
         )
 
-    def test_whitespace_handling(self, calculator: RomanCalculator) -> None:
+    def test_whitespace_handling(self, calculator: RomanConverter) -> None:
         assert calculator._standard_converter.to_arabic("  MDCLIV  ") == 1654
         assert calculator.to_arabic("\tVIII\n") == 8
 
-    def test_type_error_(self, calculator: RomanCalculator) -> None:
+    def test_type_error_(self, calculator: RomanConverter) -> None:
         with pytest.raises(exc.InvalidRomanNumeralError):
             calculator._standard_converter.to_arabic(123)  # type:ignore
         with pytest.raises(exc.InvalidRomanNumeralError):
@@ -359,7 +357,7 @@ class TestExtendedRomanProcessorToRoman:
         ],
     )
     def test_to_roman_valid(
-        self, calculator: RomanCalculator, arabic: int, expected_roman: str
+        self, calculator: RomanConverter, arabic: int, expected_roman: str
     ) -> None:
         assert calculator._extended_converter.to_roman(arabic) == expected_roman
 
@@ -373,12 +371,12 @@ class TestExtendedRomanProcessorToRoman:
         ],
     )
     def test_to_roman_invalid(
-        self, calculator: RomanCalculator, invalid_arabic: int
+        self, calculator: RomanConverter, invalid_arabic: int
     ) -> None:
         with pytest.raises(exc.NumberOutOfRangeError):
             calculator._extended_converter.to_roman(invalid_arabic)
 
-    def test_to_roman_large_number(self, calculator: RomanCalculator) -> None:
+    def test_to_roman_large_number(self, calculator: RomanConverter) -> None:
         arabic = int(6.022 * 10**23)
 
         result = calculator._extended_converter.to_roman(arabic)
@@ -403,7 +401,7 @@ class TestExtendedRomanProcessorToArabic:
         ],
     )
     def test_to_arabic_valid(
-        self, calculator: RomanCalculator, arabic: str, expected_roman: int
+        self, calculator: RomanConverter, arabic: str, expected_roman: int
     ) -> None:
         assert calculator._extended_converter.to_arabic(arabic) == expected_roman
 
@@ -432,15 +430,15 @@ class TestExtendedRomanProcessorToArabic:
         ],
     )
     def test_invalid_roman_raises(
-        self, calculator: RomanCalculator, invalid_roman: str
+        self, calculator: RomanConverter, invalid_roman: str
     ) -> None:
         with pytest.raises(exc.InvalidRomanNumeralError):
             calculator._extended_converter.to_arabic(invalid_roman)
 
-    def test_empty_string_raises(self, calculator: RomanCalculator) -> None:
+    def test_empty_string_raises(self, calculator: RomanConverter) -> None:
         with pytest.raises(exc.InvalidRomanNumeralError):
             calculator._extended_converter.to_arabic("")
 
-    def test_whitespace_handling(self, calculator: RomanCalculator) -> None:
+    def test_whitespace_handling(self, calculator: RomanConverter) -> None:
         assert calculator._extended_converter.to_arabic("  MDCLIV  ") == 1654
         assert calculator._extended_converter.to_arabic("\tVIII\n") == 8

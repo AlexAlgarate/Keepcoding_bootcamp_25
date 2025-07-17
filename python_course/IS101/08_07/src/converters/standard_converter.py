@@ -20,24 +20,32 @@ class StandardRomanConverter:
             raise exc.NumberOutOfRangeError(
                 f"Número fuera del rango ({values.MIN_ROMAN_VALUE.value}-{values.MAX_STANDARD_ROMAN.value}): {number}"
             )
+
         result = []
+
         for value, numeral in self._arabic_to_roman.items():
             count, number = divmod(number, value)
             if count:
                 result.append(numeral * count)
+
         return "".join(result)
 
     def to_arabic(self, roman: str) -> int:
         roman = RomanNumeralValidator.validate_roman_input(roman)
+
         if not RomanNumeralValidator.is_valid_roman(roman):
             raise exc.InvalidRomanNumeralError(f"Número romano inválido: '{roman}'")
+
         result = 0
         previous = 0
+
         for char in reversed(roman):
             value = self._roman_to_arabic[char]
+
             if value < previous:
                 result -= value
             else:
                 result += value
                 previous = value
+
         return result

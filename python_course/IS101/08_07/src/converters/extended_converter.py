@@ -6,7 +6,7 @@ from .converter_interface import IRomanCalculator
 from .standard_converter import StandardRomanConverter
 
 
-class ExtendedRomanProcessor(IRomanCalculator):
+class ExtendedRomanConverter(IRomanCalculator):
     THOUSAND_INDICATOR = "•"
 
     def __init__(self, standard_converter: StandardRomanConverter):
@@ -17,6 +17,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
             return [0]
 
         groups = []
+
         while number > 0:
             resto = number % 1000
             groups.append(resto)
@@ -34,6 +35,7 @@ class ExtendedRomanProcessor(IRomanCalculator):
             return [(roman, 0)]
 
         groups = roman.split(self.THOUSAND_INDICATOR)
+
         parsed = []
 
         for group in groups:
