@@ -33,9 +33,9 @@ def test_roman_inputs(
     [
         (["+"], Operation.ADD),
         (["-"], Operation.SUB),
-        (["x"], Operation.MUL),
+        (["*"], Operation.MUL),
         (["/"], Operation.DIV),
-        (["*", "x"], Operation.MUL),
+        (["x", "*"], Operation.MUL),
     ],
 )
 def test_input_operations(

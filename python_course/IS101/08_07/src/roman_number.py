@@ -6,11 +6,13 @@ from src.converters.roman_converter import RomanConverter
 
 
 class RomanNumber:
+    _converter = RomanConverter()
+
     def __init__(self, value: str | int) -> None:
-        self._converter = RomanConverter()
         if isinstance(value, str):
-            self.roman_string = value
+            self.roman_string = value.upper()
             self.arabic_number = self._converter._extended_converter.to_arabic(value)
+
         else:
             self.arabic_number = value
             self.roman_string = self._converter._extended_converter.to_roman(value)
