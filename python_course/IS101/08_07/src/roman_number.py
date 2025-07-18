@@ -9,33 +9,33 @@ class RomanNumber:
     def __init__(self, value: str | int) -> None:
         self._converter = RomanConverter()
         if isinstance(value, str):
-            self.roman = value
-            self.arabic = self._converter._extended_converter.to_arabic(value)
+            self.roman_string = value
+            self.arabic_number = self._converter._extended_converter.to_arabic(value)
         else:
-            self.arabic = value
-            self.roman = self._converter._extended_converter.to_roman(value)
+            self.arabic_number = value
+            self.roman_string = self._converter._extended_converter.to_roman(value)
 
     def __repr__(self) -> str:
-        return self.roman
+        return self.roman_string
 
     def __str__(self) -> str:
         return self.__repr__()
 
     def __eq__(self, other) -> bool:
         if isinstance(other, RomanNumber):
-            return self.arabic == other.arabic
+            return self.arabic_number == other.arabic_number
 
         return False
 
     def __hash__(self) -> int:
-        return hash((self.arabic, self.roman))
+        return hash((self.arabic_number, self.roman_string))
 
     def __add__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            valor_de_la_suma = self.arabic + other
+            valor_de_la_suma = self.arabic_number + other
 
         elif isinstance(other, RomanNumber):
-            valor_de_la_suma = self.arabic + other.arabic
+            valor_de_la_suma = self.arabic_number + other.arabic_number
 
         else:
             return NotImplemented
@@ -47,10 +47,10 @@ class RomanNumber:
 
     def __sub__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            resultado = self.arabic - other
+            resultado = self.arabic_number - other
 
         elif isinstance(other, RomanNumber):
-            resultado = self.arabic - other.arabic
+            resultado = self.arabic_number - other.arabic_number
 
         else:
             return NotImplemented
@@ -59,15 +59,15 @@ class RomanNumber:
 
     def __rsub__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            return RomanNumber(other - self.arabic)
+            return RomanNumber(other - self.arabic_number)
         else:
             return NotImplemented
 
     def __mul__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            resultado = self.arabic * other
+            resultado = self.arabic_number * other
         elif isinstance(other, RomanNumber):
-            resultado = self.arabic * other.arabic
+            resultado = self.arabic_number * other.arabic_number
         else:
             return NotImplemented
 
@@ -78,10 +78,10 @@ class RomanNumber:
 
     def __truediv__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            resultado = self.arabic // other
+            resultado = self.arabic_number // other
 
         elif isinstance(other, RomanNumber):
-            resultado = self.arabic // other.arabic
+            resultado = self.arabic_number // other.arabic_number
 
         else:
             return NotImplemented
@@ -90,17 +90,17 @@ class RomanNumber:
 
     def __rtruediv__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            return RomanNumber(other // self.arabic)
+            return RomanNumber(other // self.arabic_number)
 
         else:
             return NotImplemented
 
     def __mod__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            resultado = self.arabic % other
+            resultado = self.arabic_number % other
 
         elif isinstance(other, RomanNumber):
-            resultado = self.arabic % other.arabic
+            resultado = self.arabic_number % other.arabic_number
 
         else:
             return NotImplemented
@@ -109,17 +109,17 @@ class RomanNumber:
 
     def __rmod__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            return RomanNumber(other % self.arabic)
+            return RomanNumber(other % self.arabic_number)
 
         else:
             return NotImplemented
 
     def __pow__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            resultado = self.arabic**other
+            resultado = self.arabic_number**other
 
         elif isinstance(other, RomanNumber):
-            resultado = self.arabic**other.arabic
+            resultado = self.arabic_number**other.arabic_number
 
         else:
             return NotImplemented
@@ -128,7 +128,7 @@ class RomanNumber:
 
     def __rpow__(self, other: int | RomanNumber) -> RomanNumber | Any:
         if isinstance(other, int):
-            return RomanNumber(other**self.arabic)
+            return RomanNumber(other**self.arabic_number)
 
         else:
             return NotImplemented
