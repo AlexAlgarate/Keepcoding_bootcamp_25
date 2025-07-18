@@ -1,7 +1,5 @@
 import re
 
-from src.converters.utils import roman_exceptions as exc
-
 
 class RomanNumeralValidator:
     _ROMAN_REGEX = re.compile(
@@ -15,28 +13,26 @@ class RomanNumeralValidator:
     @classmethod
     def validate_arabic_input(cls, number: int | float) -> int:
         if not isinstance(number, (int, float)):
-            raise exc.NumberOutOfRangeError("El número debe ser numérico")
+            raise ValueError("El número debe ser numérico")
 
         if isinstance(number, float):
             if not number.is_integer():
-                raise exc.NumberOutOfRangeError("El número debe ser entero")
+                raise ValueError("El número debe ser entero")
             number = int(number)
 
         if number < 1:
-            raise exc.NumberOutOfRangeError(
-                f"El número debe ser mayor a 0. Recibido: {number}"
-            )
+            raise ValueError(f"El número debe ser mayor a 0. Recibido: {number}")
 
         return number
 
     @classmethod
     def validate_roman_input(cls, roman: str) -> str:
         if not isinstance(roman, str):
-            raise exc.InvalidRomanNumeralError("El valor debe ser una cadena de texto")
+            raise ValueError("El valor debe ser una cadena de texto")
 
         roman = roman.upper().strip()
 
         if not roman:
-            raise exc.InvalidRomanNumeralError("Cadena romana vacía.")
+            raise ValueError("Cadena romana vacía.")
 
         return roman

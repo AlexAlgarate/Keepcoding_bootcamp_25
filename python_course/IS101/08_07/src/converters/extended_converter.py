@@ -1,6 +1,5 @@
 from src.constants.constants import ROMAN_TO_ARABIC_MAP
 from src.constants.constants import MinMaxValues as values
-from src.converters.utils import roman_exceptions as exc
 
 from .converter_interface import IRomanCalculator
 from .standard_converter import StandardRomanConverter
@@ -44,9 +43,7 @@ class ExtendedRomanConverter(IRomanCalculator):
 
             else:
                 if not parsed:
-                    raise exc.InvalidRomanNumeralError(
-                        "Formato de número romano extendido inválido"
-                    )
+                    raise ValueError("Formato de número romano extendido inválido")
                 last_group, count = parsed.pop()
                 parsed.append((last_group, count + 1))
 
@@ -61,7 +58,7 @@ class ExtendedRomanConverter(IRomanCalculator):
         roman = roman.upper().strip()
 
         if not roman:
-            raise exc.InvalidRomanNumeralError("Cadena romana vacía.")
+            raise ValueError("Cadena romana vacía.")
 
         special_chars = set((" ", "\t", "\n"))
         allowed_chars = (
@@ -70,7 +67,7 @@ class ExtendedRomanConverter(IRomanCalculator):
         invalid_chars = set(roman) - allowed_chars
 
         if invalid_chars:
-            raise exc.InvalidRomanNumeralError(f"Caracteres inválidos: {invalid_chars}")
+            raise ValueError(f"Caracteres inválidos: {invalid_chars}")
 
     def to_roman(self, number: int) -> str:
         if number <= values.MAX_STANDARD_ROMAN.value:
@@ -96,7 +93,7 @@ class ExtendedRomanConverter(IRomanCalculator):
         try:
             groups = self._parse_roman_groups(roman)
         except Exception as e:
-            raise exc.InvalidRomanNumeralError(f"Error al procesar número romano: {e}")
+            raise ValueError(f"Error al procesar número romano: {e}")
 
         result = 0
 
@@ -108,6 +105,6 @@ class ExtendedRomanConverter(IRomanCalculator):
                 partial_arabic = self._standard_converter.to_arabic(roman_part)
                 result += partial_arabic * (1000**exponent)
             except Exception as e:
-                raise exc.InvalidRomanNumeralError(f"Error en conversión: {e}")
+                raise ValueError(f"Error en conversión: {e}")
 
         return result

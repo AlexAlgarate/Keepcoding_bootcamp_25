@@ -2,7 +2,6 @@ from types import MappingProxyType
 
 from src.constants.constants import ROMAN_TO_ARABIC_MAP
 from src.constants.constants import MinMaxValues as values
-from src.converters.utils import roman_exceptions as exc
 from src.converters.utils.roman_validator import RomanNumeralValidator
 
 
@@ -17,7 +16,7 @@ class StandardRomanConverter:
             <= number
             <= values.MAX_STANDARD_ROMAN.value
         ):
-            raise exc.NumberOutOfRangeError(
+            raise ValueError(
                 f"Número fuera del rango ({values.MIN_ROMAN_VALUE.value}-{values.MAX_STANDARD_ROMAN.value}): {number}"
             )
 
@@ -34,7 +33,7 @@ class StandardRomanConverter:
         roman = RomanNumeralValidator.validate_roman_input(roman)
 
         if not RomanNumeralValidator.is_valid_roman(roman):
-            raise exc.InvalidRomanNumeralError(f"Número romano inválido: '{roman}'")
+            raise ValueError(f"Número romano inválido: '{roman}'")
 
         result = 0
         previous = 0
