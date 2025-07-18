@@ -3,16 +3,15 @@ from src.roman_number import RomanNumber as RN
 
 def input_number(message: str) -> RN:
     while True:
-        cadena = input(message).upper()
+        user_input = input(message).strip()
         try:
-            if cadena.isdigit():
-                cadena = int(cadena)
-            numero = RN(cadena)
-            break
+            if user_input.isdigit():
+                number = RN(int(user_input))
+            else:
+                number = RN(user_input.upper())
+            return number
         except ValueError:
-            print("Numero Romano/Entero no valido")
-
-    return numero
+            print("Invalid Roman/integer number. Try again.")
 
 
 def input_operation(message: str):
@@ -20,4 +19,4 @@ def input_operation(message: str):
 
 
 def continue_or_exit(message: str) -> bool:
-    return input(message).lower() == "s"
+    return input(message).strip().lower() == "s"
