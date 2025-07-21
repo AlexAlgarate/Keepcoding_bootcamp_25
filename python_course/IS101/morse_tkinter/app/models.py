@@ -73,14 +73,13 @@ class MorseConverter:
 
     def morse_to_text(self, morse: str) -> str:
         words = morse.strip().split(self.WHITE_SPACE_WORDS)
-
-        decoded_words = []
-
-        for word in words:
-            letters = word.split(self.WHITE_SPACE_LETTERS)
-            decoded_letters = [morse_to_char_dict.get(letter, "") for letter in letters]
-            decoded_words.append("".join(decoded_letters))
-
+        decoded_words = [
+            "".join(
+                morse_to_char_dict.get(letter, "")
+                for letter in word.split(self.WHITE_SPACE_LETTERS)
+            )
+            for word in words
+        ]
         return " ".join(decoded_words).capitalize()
 
 
