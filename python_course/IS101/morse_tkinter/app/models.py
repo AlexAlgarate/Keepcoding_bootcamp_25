@@ -59,6 +59,9 @@ class MorseConverter:
     WHITE_SPACE_LETTERS = " "
 
     def text_to_morse(self, text: str) -> str:
+        if not isinstance(text, str):
+            raise ValueError("Debe insertar un texto válido.")
+
         return self.WHITE_SPACE_WORDS.join(
             self.WHITE_SPACE_LETTERS.join(
                 char_to_morse_dict[letter]
@@ -78,7 +81,7 @@ class MorseConverter:
             decoded_letters = [morse_to_char_dict.get(letter, "") for letter in letters]
             decoded_words.append("".join(decoded_letters))
 
-        return " ".join(decoded_words)
+        return " ".join(decoded_words).capitalize()
 
 
 # def text_to_morse(text: str):
